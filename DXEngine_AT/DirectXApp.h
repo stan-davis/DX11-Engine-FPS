@@ -1,13 +1,12 @@
 #pragma once
 
 #include <Windows.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 
-#pragma comment(lib, "d3d11.lib")
-
-#include <DirectXMath.h>
-#include <wrl/client.h>
 #include <string>
+
+#pragma comment(lib, "d3d11.lib")
 
 namespace wrl = Microsoft::WRL;
 

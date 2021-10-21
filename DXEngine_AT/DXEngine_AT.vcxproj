@@ -152,6 +152,7 @@
     <ClInclude Include="DirectXApp.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="SharedData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders.shader" />
