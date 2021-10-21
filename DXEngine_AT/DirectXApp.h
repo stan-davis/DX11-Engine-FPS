@@ -1,12 +1,14 @@
 #pragma once
 
 #include <Windows.h>
-#include <wrl/client.h>
 #include <d3d11.h>
-
-#include <string>
+#include <wrl/client.h>
+#include "Input.h"
+#include <memory>
 
 #pragma comment(lib, "d3d11.lib")
+
+#include <string>
 
 namespace wrl = Microsoft::WRL;
 
@@ -42,12 +44,15 @@ protected:
 	UINT windowWidth;
 	UINT windowHeight;
 
-	//DirectX  //MOVE SOME OF THESE INTO A SHARED DATA SINGLETON - Primarily device and context
+	//DirectX
 	wrl::ComPtr<IDXGISwapChain> swapchain;
 	wrl::ComPtr<ID3D11Device> device;
 	wrl::ComPtr<ID3D11DeviceContext> context;
 	wrl::ComPtr<ID3D11RenderTargetView> renderTargetView;
 	wrl::ComPtr<ID3D11DepthStencilView> depthStencilView;
+
+	//Input
+	std::unique_ptr<Input> input;
 
 private:
 	//Useful timing functions

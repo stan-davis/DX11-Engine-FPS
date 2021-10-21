@@ -4,13 +4,11 @@
 #include "Graphics.h"
 #include "Camera.h"
 
-#include <memory>
-
 class Game : public DiectXApp
 {
 public:
 	Game(HINSTANCE hInstance);
-	~Game();
+	~Game() = default;
 
 	void Start();
 	void Update(float delta);
@@ -24,5 +22,6 @@ private:
 
 	//Testing
 	float rot_cube = 0.01f;
+	float cam_x = 0.0f;
 };
 

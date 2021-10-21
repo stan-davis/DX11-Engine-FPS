@@ -1,34 +1,52 @@
 #include "Graphics.h"
 
 Graphics::Graphics(wrl::ComPtr<ID3D11Device> _device, wrl::ComPtr<ID3D11DeviceContext> _context) : device(_device), context(_context)
-{}
-
-HRESULT Graphics::CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint)
 {
-	HRESULT hr = S_OK;
+	CreateConstantBuffer();
+	CreateVertexShader(L"shaders.shader", "VShader");
+	CreatePixelShader(L"shaders.shader", "PShader");
+	SetInputLayout();
+}
 
+void Graphics::CreateConstantBuffer()
+{
+	//Set Up Constant Buffer
+	D3D11_BUFFER_DESC cbbd = {};
+
+	cbbd.Usage = D3D11_USAGE_DEFAULT;
+	cbbd.ByteWidth = sizeof(cBuffer);
+	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbbd.CPUAccessFlags = 0;
+	cbbd.MiscFlags = 0;
+
+	device->CreateBuffer(&cbbd, nullptr, constantBuffer.GetAddressOf());
+}
+
+void Graphics::UpdateBufferData(dx::XMMATRIX bufferData)
+{
+	localConstantBuffer.WVP = DirectX::XMMatrixTranspose(bufferData);
+	context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &localConstantBuffer, 0, 0);
+	context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+}
+
+void Graphics::CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint)
+{
 	D3DCompileFromFile(filePath, 0, 0, entryPoint, "vs_4_0", 0, 0, &VS, 0);
-	hr = device->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &vertexShader);
+
+	device->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &vertexShader);
 	context->VSSetShader(vertexShader.Get(), 0, 0);
-
-	return hr;
 }
 
-HRESULT Graphics::CreatePixelShader(LPCWSTR filePath, LPCSTR entryPoint)
+void Graphics::CreatePixelShader(LPCWSTR filePath, LPCSTR entryPoint)
 {
-	HRESULT hr = S_OK;
-
 	D3DCompileFromFile(filePath, 0, 0, entryPoint, "ps_4_0", 0, 0, &PS, 0);
-	hr = device->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, &pixelShader);
-	context->PSSetShader(pixelShader.Get(), 0, 0);
 
-	return hr;
+	device->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, &pixelShader);
+	context->PSSetShader(pixelShader.Get(), 0, 0);
 }
 
-HRESULT Graphics::SetInputLayout()
+void Graphics::SetInputLayout()
 {
-	HRESULT hr = S_OK;
-
 	D3D11_INPUT_ELEMENT_DESC ild[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -37,10 +55,8 @@ HRESULT Graphics::SetInputLayout()
 
 	UINT elementCount = ARRAYSIZE(ild);
 
-	hr = device->CreateInputLayout(ild, elementCount, VS->GetBufferPointer(), VS->GetBufferSize(), inputLayout.GetAddressOf());
+	device->CreateInputLayout(ild, elementCount, VS->GetBufferPointer(), VS->GetBufferSize(), inputLayout.GetAddressOf());
 	context->IASetInputLayout(inputLayout.Get());
-
-	return hr;
 }
 
 HRESULT Graphics::CreateIndexBuffer()

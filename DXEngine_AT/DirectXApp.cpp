@@ -33,12 +33,12 @@ LRESULT DiectXApp::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
-		/*case WM_KEYDOWN:
-			switch(wParam)
-			{
-				//Send key presses to input class
-			}
-		*/
+		case WM_KEYDOWN:
+			input->keyDown(wParam);
+			break;
+		case WM_KEYUP:
+			input->keyUp(wParam);
+			break;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -65,7 +65,7 @@ HRESULT DiectXApp::InitWindow()
 			return HRESULT_FROM_WIN32(lastError);
 	}
 
-	RECT wr = { 0, 0, windowWidth,windowHeight };
+	RECT wr = { 0, 0, windowWidth, windowHeight };
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
 	//Convert Window Title
@@ -133,6 +133,7 @@ HRESULT DiectXApp::InitDirectX()
 		0,
 		&context);
 
+
 	if (FAILED(result)) return result;
 
 	//Get Back Buffer Address
@@ -198,6 +199,8 @@ HRESULT DiectXApp::Run()
 
 	//First Frame Start
 	Start();
+
+	input = std::make_unique<Input>();
 
 	//Message & Game Loop
 	MSG msg = {};

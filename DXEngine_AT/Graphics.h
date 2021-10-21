@@ -1,14 +1,16 @@
 #pragma once
 
 #include <d3d11.h>
+#include <wrl/client.h>
 #include <d3dcompiler.h>
+
+#include <vector>
+#include <DirectXMath.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
-#include <wrl/client.h>
-#include <vector>
-
 namespace wrl = Microsoft::WRL;
+namespace dx = DirectX;
 
 class Graphics
 {
@@ -21,14 +23,21 @@ public:
 
 	Graphics(wrl::ComPtr<ID3D11Device> _device, wrl::ComPtr<ID3D11DeviceContext> _context);
 	~Graphics() = default;
-
-	HRESULT CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint);
-	HRESULT CreatePixelShader(LPCWSTR filePath, LPCSTR entryPoint);
-	HRESULT SetInputLayout();
-
+	
+	void UpdateBufferData(dx::XMMATRIX bufferData);
 	HRESULT CreateMesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices);
 
 private:
+	struct cBuffer
+	{
+		DirectX::XMMATRIX WVP;
+	};
+
+	void CreateConstantBuffer();
+	void CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint);
+	void CreatePixelShader(LPCWSTR filePath, LPCSTR entryPoint);
+	void SetInputLayout();
+
 	HRESULT CreateIndexBuffer();
 	HRESULT CreateVertexBuffer();
 
@@ -46,6 +55,9 @@ private:
 	ID3D10Blob* PS;
 	wrl::ComPtr<ID3D11Buffer> indexBuffer;
 	wrl::ComPtr<ID3D11Buffer> vertexBuffer;
+
+	wrl::ComPtr<ID3D11Buffer> constantBuffer;
+	cBuffer localConstantBuffer;
 
 	//Mesh
 	std::vector<Vertex> vertices;

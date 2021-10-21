@@ -1,20 +1,13 @@
 #include "Game.h"
 #include <vector>
 
-Game::Game(HINSTANCE hInstance) : DiectXApp(hInstance, "A DirectX11 Game", 800, 600)
-{}
+Game::Game(HINSTANCE hInstance) : DiectXApp(hInstance, "A DirectX11 Game", 800, 600) {}
 
-Game::~Game()
-{}
-
-void Game::Start()
+void Game::Start() 
 {
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	graphics = std::make_unique<Graphics>(device, context);
-	graphics->CreateVertexShader(L"shaders.shader", "VShader");
-	graphics->CreatePixelShader(L"shaders.shader", "PShader");
-	graphics->SetInputLayout();
 
 	//Cube Shape
 	std::vector<Graphics::Vertex> verts =
@@ -58,17 +51,28 @@ void Game::Start()
 
 	graphics->CreateMesh(verts, ind);
 
-	camera = std::make_unique<Camera>(device, context, windowWidth, windowHeight);
+	camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
 }
 
 void Game::Update(float delta)
 {
+	//KEYBOARD INPUT
+	if (input->isPressed(Input::KEY::W))
+	{
+		cam_x += 20 * delta;
+	}
+
+	if (input->isPressed(Input::KEY::S))
+	{
+		cam_x -= 20 * delta;
+	}
+
 	//Rotate cube
 	rot_cube += 0.0005f;
 	if (rot_cube > 6.28f) rot_cube = 0.0f;
 
 	camera->Rotate(0.0f, 1.0f, 0.0f, rot_cube);
-	camera->Translate(0.0f, 0.0f, 0.0f);
+	camera->Translate(cam_x, 0.0f, 0.0f);
 	camera->Update();
 }
 
@@ -79,7 +83,7 @@ void Game::Draw(float delta)
 	context->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	//Camera update
-	camera->Render();
+	graphics->UpdateBufferData(camera->GetWorldProjectionMatrix());
 
 	context->DrawIndexed(36, 0, 0);
 
