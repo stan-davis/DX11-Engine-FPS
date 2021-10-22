@@ -21,7 +21,7 @@ private:
 	std::unique_ptr<Camera> camera;
 
 	//Testing
-	float rot_cube = 0.01f;
 	float cam_x = 0.0f;
+	float cam_z = 0.0f;
 };
 

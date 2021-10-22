@@ -57,22 +57,27 @@ void Game::Start()
 void Game::Update(float delta)
 {
 	//KEYBOARD INPUT
-	if (input->isPressed(Input::KEY::W))
+	if (input->isPressed(KEYS::D))
 	{
-		cam_x += 20 * delta;
+		cam_x -= 5 * delta;
 	}
 
-	if (input->isPressed(Input::KEY::S))
+	if (input->isPressed(KEYS::A))
 	{
-		cam_x -= 20 * delta;
+		cam_x += 5 * delta;
 	}
 
-	//Rotate cube
-	rot_cube += 0.0005f;
-	if (rot_cube > 6.28f) rot_cube = 0.0f;
+	if (input->isPressed(KEYS::W))
+	{
+		cam_z -= 5 * delta;
+	}
 
-	camera->Rotate(0.0f, 1.0f, 0.0f, rot_cube);
-	camera->Translate(cam_x, 0.0f, 0.0f);
+	if (input->isPressed(KEYS::S))
+	{
+		cam_z += 5 * delta;
+	}
+
+	camera->Translate(cam_x, 0.0f, cam_z);
 	camera->Update();
 }
 

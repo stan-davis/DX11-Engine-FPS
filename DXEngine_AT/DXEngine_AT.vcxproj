@@ -154,6 +154,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Keys.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders.shader" />

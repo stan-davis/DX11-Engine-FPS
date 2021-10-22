@@ -9,26 +9,30 @@ Camera::Camera(float fov, float aspectRatio, float near, float far)
 
 	camView = DirectX::XMMatrixLookAtLH(camPosition, camTarget, camUp);
 	camProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, near, far);
+
+	//Required to draw objects in world space
+	Translate(0.0f, 0.0f, 0.0f);
+	Rotate(0.0f, 1.0f, 0.0f, 0.0f);
 }
 
 void Camera::Update()
 {
-	World = DirectX::XMMatrixIdentity();
-	World = Translation * Rotation;
+	world = DirectX::XMMatrixIdentity();
+	world = translation * rotation;
 }
 
 dx::XMMATRIX Camera::GetWorldProjectionMatrix()
 {
-	return World * camView * camProjection;
+	return world * camView * camProjection;
 }
 
 void Camera::Translate(float x, float y, float z)
 {
-	Translation = DirectX::XMMatrixTranslation(x, y, z);
+	translation = DirectX::XMMatrixTranslation(x, y, z);
 }
 
 void Camera::Rotate(float x, float y, float z, float angle)
 {
 	dx::XMVECTOR axis = dx::XMVectorSet(x, y, z, 0.0f);
-	Rotation = dx::XMMatrixRotationAxis(axis, angle);
+	rotation = dx::XMMatrixRotationAxis(axis, angle);
 }

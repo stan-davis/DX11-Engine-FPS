@@ -18,11 +18,11 @@ public:
 
 private:
 	//World Matrices
-	dx::XMMATRIX World;
+	dx::XMMATRIX world;
 
-	dx::XMMATRIX Rotation;
-	dx::XMMATRIX Scale;
-	dx::XMMATRIX Translation;
+	dx::XMMATRIX rotation;
+	dx::XMMATRIX scale;
+	dx::XMMATRIX translation;
 
 	//Camera
 	dx::XMMATRIX camView;
