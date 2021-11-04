@@ -3,7 +3,7 @@
 Camera::Camera(float fov, float aspectRatio, float near, float far)
 {
 	//Set up camera TESTING ONLY
-	camPosition = DirectX::XMVectorSet(0.0f, 3.0f, -8.0f, 0.0f);
+	camPosition = DirectX::XMVectorSet(0.0f, 0.0f, -0.001f, 0.0f);
 	camTarget = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	camUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 

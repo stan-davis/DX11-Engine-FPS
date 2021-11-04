@@ -22,8 +22,9 @@ private:
 
 	//Level
 	void CreateMapData(std::string filePath);
-
-	//Testing
+	
+	//Player movement
+	float cam_angle = 0.0f;
 	float cam_x = 0.0f;
 	float cam_z = 0.0f;
 };

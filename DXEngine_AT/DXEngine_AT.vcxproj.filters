@@ -55,9 +55,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders.shader" />
+    <None Include="BasicShader.hlsl" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_map.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture_stone.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

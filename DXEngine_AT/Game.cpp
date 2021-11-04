@@ -17,28 +17,36 @@ void Game::Start()
 
 void Game::Update(float delta)
 {
-	//KEYBOARD INPUT
-	if (input->isPressed(KEYS::D))
-	{
-		cam_x -= 5 * delta;
-	}
+	float move_speed = 10 * delta;
+	float rotation_speed = 4 * delta;
+
+	//Key input
 
 	if (input->isPressed(KEYS::A))
 	{
-		cam_x += 5 * delta;
+		cam_angle -= rotation_speed;
+	}
+
+	if (input->isPressed(KEYS::D))
+	{
+		cam_angle += rotation_speed;
 	}
 
 	if (input->isPressed(KEYS::W))
 	{
-		cam_z -= 5 * delta;
+		cam_x -= std::sinf(cam_angle) * move_speed;
+		cam_z -= std::cosf(cam_angle) * move_speed;
 	}
 
 	if (input->isPressed(KEYS::S))
 	{
-		cam_z += 5 * delta;
+		cam_x += std::sinf(cam_angle) * move_speed;
+		cam_z += std::cosf(cam_angle) * move_speed;
 	}
 
-	camera->Translate(cam_x, 0.0f, cam_z);
+	//Adjust camera
+	camera->Translate(cam_x, 0, cam_z);
+	camera->Rotate(0, 1, 0, -cam_angle);
 	camera->Update();
 }
 
@@ -58,6 +66,7 @@ void Game::CreateMapData(std::string filePath)
 {
 	int mapWidth = 0;
 	int mapHeight = 0;
+	int cubeSize = 2;
 
 	char* mapData = nullptr;
 
@@ -83,8 +92,10 @@ void Game::CreateMapData(std::string filePath)
 	for(int x = 0; x < mapWidth; x++)
 		for (int z = 0; z < mapHeight; z++)
 		{
-			if (mapData[z * mapWidth + x] == '#')
-				graphics->CreateTestCube(x * 2.0f, 0.0f, z * 2.0f);
+			char index = mapData[z * mapWidth + x];
+
+			if (index == '#')
+				graphics->CreateTestCube(x * cubeSize, 0.0f, z * cubeSize);
 		}
 
 	delete[] mapData;

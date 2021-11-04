@@ -6,6 +6,8 @@
 
 #include <vector>
 #include <DirectXMath.h>
+#include <WICTextureLoader.h>
+#include <string>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -17,8 +19,11 @@ class Graphics
 public:
 	struct Vertex
 	{
-		float x, y, z;
-		float color[4];
+		Vertex(){}
+		Vertex(float x, float y, float z, float u, float v) : position(x, y, z), texCoord(u, v) {}
+
+		dx::XMFLOAT3 position;
+		dx::XMFLOAT2 texCoord;
 	};
 
 	Graphics(wrl::ComPtr<ID3D11Device> _device, wrl::ComPtr<ID3D11DeviceContext> _context);
@@ -43,6 +48,7 @@ private:
 
 	HRESULT CreateIndexBuffer();
 	HRESULT CreateVertexBuffer();
+	HRESULT SetTexture(const std::wstring filePath);
 
 	//DirectX
 	wrl::ComPtr<ID3D11Device> device;
@@ -68,5 +74,9 @@ private:
 
 	//Objects
 	std::vector<dx::XMMATRIX> objectMatrices;
+	
+	//Textures
+	wrl::ComPtr<ID3D11ShaderResourceView> stoneTexture;
+	wrl::ComPtr<ID3D11SamplerState> stoneTextureSamplerState;
 };
 
