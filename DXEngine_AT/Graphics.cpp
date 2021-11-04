@@ -24,9 +24,65 @@ void Graphics::CreateConstantBuffer()
 
 void Graphics::UpdateBufferData(dx::XMMATRIX bufferData)
 {
-	localConstantBuffer.WVP = DirectX::XMMatrixTranspose(bufferData);
-	context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &localConstantBuffer, 0, 0);
-	context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+	for (auto& m : objectMatrices)
+	{
+		dx::XMMATRIX world = m * bufferData;
+		localConstantBuffer.WVP = dx::XMMatrixTranspose(world);
+		context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &localConstantBuffer, 0, 0);
+		context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+		context->DrawIndexed((UINT)std::size(indices), 0, 0);
+	}
+}
+
+void Graphics::CreateTestCube(float x, float y, float z)
+{
+	//Cube Shape
+	std::vector<Graphics::Vertex> verts =
+	{
+		{-1.0f, -1.0f, -1.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{-1.0f, +1.0f, -1.0f, {0.0f, 1.0f, 0.0f, 1.0f}},
+		{+1.0f, +1.0f, -1.0f, {0.0f, 0.0f, 1.0f, 1.0f}},
+		{+1.0f, -1.0f, -1.0f, {1.0f, 1.0f, 0.0f, 1.0f}},
+		{-1.0f, -1.0f, +1.0f, {0.0f, 1.0f, 1.0f, 1.0f}},
+		{-1.0f, +1.0f, +1.0f, {1.0f, 1.0f, 1.0f, 1.0f}},
+		{+1.0f, +1.0f, +1.0f, {1.0f, 0.0f, 1.0f, 1.0f}},
+		{+1.0f, -1.0f, +1.0f, {1.0f, 0.0f, 0.0f, 1.0f}}
+	};
+
+	std::vector<DWORD> ind =
+	{
+		// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		// back face
+		4, 6, 5,
+		4, 7, 6,
+
+		// left face
+		4, 5, 1,
+		4, 1, 0,
+
+		// right face
+		3, 2, 6,
+		3, 6, 7,
+
+		// top face
+		1, 5, 6,
+		1, 6, 2,
+
+		// bottom face
+		4, 0, 3,
+		4, 3, 7
+	};
+
+	CreateMesh(verts, ind);
+
+	//Create Matrix
+	dx::XMMATRIX matrix = dx::XMMatrixIdentity();
+	matrix = dx::XMMatrixTranslation(x, y, z);
+
+	objectMatrices.push_back(matrix);
 }
 
 void Graphics::CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint)
@@ -114,9 +170,11 @@ HRESULT Graphics::CreateMesh(std::vector<Vertex> _vertices, std::vector<DWORD> _
 {
 	HRESULT hr = S_OK;
 
+	//Set verts & indices
 	vertices = _vertices;
 	indices = _indices;
-
+	
+	//Create buffers
 	hr = CreateIndexBuffer();
 	hr = CreateVertexBuffer();
 

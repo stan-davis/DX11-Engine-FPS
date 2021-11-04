@@ -25,6 +25,9 @@ public:
 	~Graphics() = default;
 	
 	void UpdateBufferData(dx::XMMATRIX bufferData);
+
+	void CreateTestCube(float x, float y, float z);
+
 	HRESULT CreateMesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices);
 
 private:
@@ -59,8 +62,11 @@ private:
 	wrl::ComPtr<ID3D11Buffer> constantBuffer;
 	cBuffer localConstantBuffer;
 
-	//Mesh
+	//Mesh (Split off into mesh class)
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
+
+	//Objects
+	std::vector<dx::XMMATRIX> objectMatrices;
 };
 

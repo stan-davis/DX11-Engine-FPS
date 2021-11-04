@@ -1,55 +1,16 @@
 #include "Game.h"
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 Game::Game(HINSTANCE hInstance) : DiectXApp(hInstance, "A DirectX11 Game", 800, 600) {}
 
 void Game::Start() 
 {
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	graphics = std::make_unique<Graphics>(device, context);
 
-	//Cube Shape
-	std::vector<Graphics::Vertex> verts =
-	{
-		{-1.0f, -1.0f, -1.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{-1.0f, +1.0f, -1.0f, {0.0f, 1.0f, 0.0f, 1.0f}},
-		{+1.0f, +1.0f, -1.0f, {0.0f, 0.0f, 1.0f, 1.0f}},
-		{+1.0f, -1.0f, -1.0f, {1.0f, 1.0f, 0.0f, 1.0f}},
-		{-1.0f, -1.0f, +1.0f, {0.0f, 1.0f, 1.0f, 1.0f}},
-		{-1.0f, +1.0f, +1.0f, {1.0f, 1.0f, 1.0f, 1.0f}},
-		{+1.0f, +1.0f, +1.0f, {1.0f, 0.0f, 1.0f, 1.0f}},
-		{+1.0f, -1.0f, +1.0f, {1.0f, 0.0f, 0.0f, 1.0f}}
-	};
-
-	std::vector<DWORD> ind =
-	{
-		// front face
-		0, 1, 2,
-		0, 2, 3,
-
-		// back face
-		4, 6, 5,
-		4, 7, 6,
-
-		// left face
-		4, 5, 1,
-		4, 1, 0,
-
-		// right face
-		3, 2, 6,
-		3, 6, 7,
-
-		// top face
-		1, 5, 6,
-		1, 6, 2,
-
-		// bottom face
-		4, 0, 3,
-		4, 3, 7
-	};
-
-	graphics->CreateMesh(verts, ind);
+	CreateMapData("test_map.txt");
 
 	camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
 }
@@ -90,7 +51,41 @@ void Game::Draw(float delta)
 	//Camera update
 	graphics->UpdateBufferData(camera->GetWorldProjectionMatrix());
 
-	context->DrawIndexed(36, 0, 0);
-
 	swapchain->Present(0, 0);
+}
+
+void Game::CreateMapData(std::string filePath)
+{
+	int mapWidth = 0;
+	int mapHeight = 0;
+
+	char* mapData = nullptr;
+
+	std::ifstream data(filePath, std::ios::in | std::ios::binary);
+
+	if (data.is_open())
+	{
+		OutputDebugString(L"Successfully opened level data\n");
+
+		data >> mapWidth >> mapHeight;
+		mapData = new char[mapWidth * mapHeight];
+
+		for (int i = 0; i < mapWidth * mapHeight; i++)
+		{
+			data >> mapData[i];
+		}
+	}
+	else
+	{
+		OutputDebugString(L"Failed to open level data\n");
+	}
+
+	for(int x = 0; x < mapWidth; x++)
+		for (int z = 0; z < mapHeight; z++)
+		{
+			if (mapData[z * mapWidth + x] == '#')
+				graphics->CreateTestCube(x * 2.0f, 0.0f, z * 2.0f);
+		}
+
+	delete[] mapData;
 }

@@ -20,6 +20,9 @@ private:
 	std::unique_ptr<Graphics> graphics;
 	std::unique_ptr<Camera> camera;
 
+	//Level
+	void CreateMapData(std::string filePath);
+
 	//Testing
 	float cam_x = 0.0f;
 	float cam_z = 0.0f;

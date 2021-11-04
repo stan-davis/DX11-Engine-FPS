@@ -133,7 +133,6 @@ HRESULT DiectXApp::InitDirectX()
 		0,
 		&context);
 
-
 	if (FAILED(result)) return result;
 
 	//Get Back Buffer Address
