@@ -34,14 +34,14 @@ void Game::Update(float delta)
 
 	if (input->isPressed(KEYS::W))
 	{
-		cam_x -= std::sinf(cam_angle) * move_speed;
-		cam_z -= std::cosf(cam_angle) * move_speed;
+		cam_x += std::sinf(cam_angle) * move_speed;
+		cam_z += std::cosf(cam_angle) * move_speed;
 	}
 
 	if (input->isPressed(KEYS::S))
 	{
-		cam_x += std::sinf(cam_angle) * move_speed;
-		cam_z += std::cosf(cam_angle) * move_speed;
+		cam_x -= std::sinf(cam_angle) * move_speed;
+		cam_z -= std::cosf(cam_angle) * move_speed;
 	}
 
 	//Adjust camera
@@ -95,7 +95,17 @@ void Game::CreateMapData(std::string filePath)
 			char index = mapData[z * mapWidth + x];
 
 			if (index == '#')
-				graphics->CreateTestCube(x * cubeSize, 0.0f, z * cubeSize);
+				graphics->CreateTestCube(x * cubeSize, 0.0f, z * cubeSize, L"texture_stone.png");
+			if (index == '@')
+			{
+				//Spawn Player
+				cam_x -= x * cubeSize;
+				cam_z -= z * cubeSize;
+			}
+			if (index == 'e')
+			{
+				//Spawn Enemy
+			}
 		}
 
 	delete[] mapData;
