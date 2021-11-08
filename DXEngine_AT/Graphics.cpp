@@ -24,10 +24,10 @@ void Graphics::CreateConstantBuffer()
 
 void Graphics::UpdateBufferData(DX::XMMATRIX bufferData)
 {
-	for (auto& mesh : meshVector)
+	for (auto& e : entities)
 	{
 		//Set world translation/rotation/scale
-		DX::XMMATRIX world = mesh.GetMatrix() * bufferData;
+		DX::XMMATRIX world = e.GetMatrix() * bufferData;
 		localConstantBuffer.WVP = DX::XMMatrixTranspose(world);
 
 		//Update Vertex Shader Constant Buffers
@@ -35,92 +35,26 @@ void Graphics::UpdateBufferData(DX::XMMATRIX bufferData)
 		context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
 		//Update Pixel Shader Constant Buffers
-		context->PSSetShaderResources(0, 1, mesh.GetTexture().GetAddressOf());
-		context->PSSetSamplers(0, 1, mesh.GetSamplerState().GetAddressOf());
+		context->PSSetShaderResources(0, 1, e.GetMesh().GetTexture().GetAddressOf());
+		context->PSSetSamplers(0, 1, e.GetMesh().GetSamplerState().GetAddressOf());
 
 		//Draw the object
-		context->DrawIndexed((UINT)std::size(mesh.GetIndices()), 0, 0);
+		context->DrawIndexed((UINT)std::size(e.GetMesh().GetIndices()), 0, 0);
 	}
 }
 
-void Graphics::CreateTestCube(float x, float y, float z, std::wstring texturePath)
+void Graphics::SetEntities(std::vector<Entity> _entities)
 {
-	//Cube Shape
-	std::vector<Mesh::Vertex> verts =
-	{
-		// Front Face
-		 Mesh::Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-
-		 // Back Face
-		 Mesh::Vertex(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f),
-		 Mesh::Vertex(1.0f, -1.0f, 1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(1.0f,  1.0f, 1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f),
-
-		 // Top Face
-		 Mesh::Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(1.0f, 1.0f,  1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(1.0f, 1.0f, -1.0f, 1.0f, 1.0f),
-
-		 // Bottom Face
-		 Mesh::Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-		 Mesh::Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(1.0f, -1.0f,  1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f),
-
-		 // Left Face
-		 Mesh::Vertex(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-
-		 // Right Face
-		 Mesh::Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(1.0f,  1.0f,  1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(1.0f, -1.0f,  1.0f, 1.0f, 1.0f),
-	};
-
-	std::vector<DWORD> ind =
-	{
-		// Front Face
-		0,  1,  2,
-		0,  2,  3,
-
-		// Back Face
-		4,  5,  6,
-		4,  6,  7,
-
-		// Top Face
-		8,  9, 10,
-		8, 10, 11,
-
-		// Bottom Face
-		12, 13, 14,
-		12, 14, 15,
-
-		// Left Face
-		16, 17, 18,
-		16, 18, 19,
-
-		// Right Face
-		20, 21, 22,
-		20, 22, 23
-	};
-
-	Mesh mesh = Mesh(verts, ind, texturePath, DX::XMFLOAT3(x,y,z) , device);
+	entities = _entities;
 
 	UINT stride = sizeof(Mesh::Vertex);
 	UINT offset = 0;
 
-	context->IASetIndexBuffer(mesh.GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
-	context->IASetVertexBuffers(0, 1, mesh.GetVertexBuffer().GetAddressOf(), &stride, &offset);
-
-	meshVector.push_back(mesh);
+	for (auto& e : entities)
+	{
+		context->IASetIndexBuffer(e.GetMesh().GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetVertexBuffers(0, 1, e.GetMesh().GetVertexBuffer().GetAddressOf(), &stride, &offset);
+	}
 }
 
 void Graphics::CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint)

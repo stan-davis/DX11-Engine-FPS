@@ -1,7 +1,17 @@
 #include "Mesh.h"
 #include <WICTextureLoader.h>
 
-Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstring texturePath, DirectX::XMFLOAT3 position, wrl::ComPtr<ID3D11Device> _device) : vertices(_vertices), indices(_indices), device(_device)
+Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device) : vertices(_vertices), indices(_indices), texturePath(_texturePath), device(_device)
+{
+	Initilize();
+}
+
+Mesh::Mesh(Primitive primitive, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device) : vertices(primitive._vertices), indices(primitive._indices), texturePath(_texturePath), device(_device)
+{
+	Initilize();
+}
+
+void Mesh::Initilize()
 {
 	//Create Index Buffer
 	D3D11_BUFFER_DESC ibd = {};
@@ -16,7 +26,7 @@ Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstr
 	indData.pSysMem = indices.data();
 
 	device->CreateBuffer(&ibd, &indData, indexBuffer.GetAddressOf());
-	
+
 	//Create vertex buffer
 	D3D11_BUFFER_DESC vbd = {};
 
@@ -45,8 +55,4 @@ Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstr
 	sdc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	device->CreateSamplerState(&sdc, textureSamplerState.GetAddressOf());
-
-	//Set World Matrix
-	matrix = DirectX::XMMatrixIdentity();
-	matrix = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 }

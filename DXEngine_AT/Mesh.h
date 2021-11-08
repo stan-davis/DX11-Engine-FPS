@@ -19,8 +19,18 @@ public:
 		DirectX::XMFLOAT2 texCoord;
 	};
 
+	struct Primitive
+	{
+		Primitive() {}
+		Primitive(std::vector<Vertex> _vertices, std::vector<DWORD> _indices) : _vertices(_vertices), _indices(_indices) {}
+
+		std::vector<Vertex> _vertices;
+		std::vector<DWORD> _indices;
+	};
+
 	Mesh() = default;
-	Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstring texturePath, DirectX::XMFLOAT3 position, wrl::ComPtr<ID3D11Device> _device);
+	Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device);
+	Mesh(Primitive primitive, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device);
 
 	~Mesh() = default;
 
@@ -33,9 +43,9 @@ public:
 	wrl::ComPtr<ID3D11ShaderResourceView> GetTexture() { return texture; }
 	wrl::ComPtr<ID3D11SamplerState> GetSamplerState() { return textureSamplerState; }
 
-	DirectX::XMMATRIX GetMatrix() { return matrix; }
-
 private:
+	void Initilize();
+
 	//DirectX
 	wrl::ComPtr<ID3D11Device> device;
 
@@ -47,10 +57,8 @@ private:
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
 
+	std::wstring texturePath;
+
 	wrl::ComPtr<ID3D11ShaderResourceView> texture;
 	wrl::ComPtr<ID3D11SamplerState> textureSamplerState;
-
-	//Transforms
-	DirectX::XMMATRIX matrix;
 };
-

@@ -1,7 +1,6 @@
 #pragma once
 #include <d3dcompiler.h>
-
-#include "Mesh.h"
+#include "Entity.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -15,7 +14,7 @@ public:
 	~Graphics() = default;
 	
 	void UpdateBufferData(DX::XMMATRIX bufferData);
-	void CreateTestCube(float x, float y, float z, std::wstring texturePath);
+	void SetEntities(std::vector<Entity> _entities);
 
 private:
 	struct cBuffer
@@ -45,6 +44,6 @@ private:
 	cBuffer localConstantBuffer;
 
 	//Objects
-	std::vector<Mesh> meshVector;
+	std::vector<Entity> entities;
 };
 

@@ -2,6 +2,7 @@
 
 #include "DirectXApp.h"
 #include "Graphics.h"
+#include "Entity.h"
 #include "Camera.h"
 
 class Game : public DiectXApp
@@ -22,7 +23,8 @@ private:
 
 	//Level
 	void CreateMapData(std::string filePath);
-	
+	std::vector<Entity> entities;
+
 	//Player movement
 	float cam_angle = 0.0f;
 	float cam_x = 0.0f;
