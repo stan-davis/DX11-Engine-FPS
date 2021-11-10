@@ -1,19 +1,44 @@
 #include "Entity.h"
 
-Entity::Entity(Mesh _mesh, Vector3 _position) : mesh(_mesh)
+Entity::Entity()
+{
+	Init();
+}
+
+Entity::Entity(Mesh _mesh) : mesh(_mesh)
+{
+	Init();
+}
+
+void Entity::Init()
 {
 	matrix = DirectX::XMMatrixIdentity();
-	SetPosition(_position);
+	scale = DirectX::XMMatrixIdentity();
+	rotation = DirectX::XMMatrixIdentity();
 }
 
-void Entity::SetPosition(Vector3 _position)
+void Entity::Update()
 {
-	position = _position;
-	matrix = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+	
 }
 
-void Entity::SetRotation(Vector3 axis, float angle)
+void Entity::Draw()
 {
-	DirectX::XMVECTOR _axis = DirectX::XMVectorSet(axis.x, axis.y, axis.z, 0);
-	matrix = DirectX::XMMatrixRotationAxis(_axis, angle);
+	matrix = scale * rotation * translation;
+}
+
+void Entity::Translate(Vector3 position)
+{
+	translation = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+}
+
+void Entity::Rotate(Vector3 axis, float angle)
+{
+	DirectX::XMVECTOR _axis = DirectX::XMVectorSet(axis.x, axis.y, axis.z, 0.0f);
+	rotation = DirectX::XMMatrixRotationAxis(_axis, angle);
+}
+
+void Entity::Scale(Vector3 factor)
+{
+	scale = DirectX::XMMatrixScaling(factor.x, factor.y, factor.z);
 }

@@ -22,7 +22,6 @@ void Game::Update(float delta)
 	float rotation_speed = 4 * delta;
 
 	//Key input
-
 	if (input->isPressed(KEYS::A))
 	{
 		cam_angle -= rotation_speed;
@@ -57,9 +56,15 @@ void Game::Draw(float delta)
 	context->ClearRenderTargetView(renderTargetView.Get(), CLEAR_COLOR);
 	context->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//Camera update
-	graphics->UpdateBufferData(camera->GetWorldProjectionMatrix());
+	//Buffer Update
+	for (auto& e : entities)
+	{
+		e.Draw();
+	}
+	
+	graphics->UpdateBufferData(entities, camera->GetWorldProjectionMatrix());
 
+	//Present
 	swapchain->Present(0, 0);
 }
 
@@ -157,7 +162,13 @@ void Game::CreateMapData(std::string filePath)
 		20, 22, 23
 	};
 
-	Mesh wallMesh = Mesh(verts, ind, L"texture_stone.png", device);
+	//Wall
+	Mesh::Primitive CUBE = Mesh::Primitive(verts, ind);
+	Mesh wallMesh = Mesh(CUBE, L"texture_stone.png", device);
+
+	//Enemy stuff
+	Mesh::Primitive PLANE = Mesh::Primitive(verts, ind);
+	Mesh enemyMesh = Mesh(PLANE, L"demon.png", device);
 
 	//Draw map
 	for(int x = 0; x < mapWidth; x++)
@@ -165,21 +176,27 @@ void Game::CreateMapData(std::string filePath)
 		{
 			char index = mapData[z * mapWidth + x];
 
-			if (index == '#')
+			Entity e;
+
+			switch (index)
 			{
-				Entity wall = Entity(wallMesh, { static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
-				entities.push_back(wall);
-			}
-			if (index == '@')
-			{
+			case '#':
+				e = Entity(wallMesh);
+				e.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
+				break;
+			case '@':
 				//Spawn Player
 				cam_x -= x * cubeSize;
 				cam_z -= z * cubeSize;
+				break;
+			case 'e':
+				e = Entity(enemyMesh);
+				e.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
+				break;
 			}
-		}
 
-	//Update entity list
-	graphics->SetEntities(entities);
+			entities.push_back(e);
+		}
 
 	delete[] mapData;
 }

@@ -18,7 +18,7 @@ public:
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT2 texCoord;
 	};
-
+	
 	struct Primitive
 	{
 		Primitive() {}

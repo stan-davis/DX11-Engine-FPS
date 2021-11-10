@@ -22,12 +22,19 @@ void Graphics::CreateConstantBuffer()
 	device->CreateBuffer(&cbbd, nullptr, constantBuffer.GetAddressOf());
 }
 
-void Graphics::UpdateBufferData(DX::XMMATRIX bufferData)
+void Graphics::UpdateBufferData(std::vector<Entity>& entities, DX::XMMATRIX cameraMatrix)
 {
+	UINT stride = sizeof(Mesh::Vertex);
+	UINT offset = 0;
+
 	for (auto& e : entities)
 	{
+		//Set Buffers
+		context->IASetIndexBuffer(e.GetMesh().GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetVertexBuffers(0, 1, e.GetMesh().GetVertexBuffer().GetAddressOf(), &stride, &offset);
+
 		//Set world translation/rotation/scale
-		DX::XMMATRIX world = e.GetMatrix() * bufferData;
+		DX::XMMATRIX world = e.GetMatrix() * cameraMatrix;
 		localConstantBuffer.WVP = DX::XMMatrixTranspose(world);
 
 		//Update Vertex Shader Constant Buffers
@@ -40,20 +47,6 @@ void Graphics::UpdateBufferData(DX::XMMATRIX bufferData)
 
 		//Draw the object
 		context->DrawIndexed((UINT)std::size(e.GetMesh().GetIndices()), 0, 0);
-	}
-}
-
-void Graphics::SetEntities(std::vector<Entity> _entities)
-{
-	entities = _entities;
-
-	UINT stride = sizeof(Mesh::Vertex);
-	UINT offset = 0;
-
-	for (auto& e : entities)
-	{
-		context->IASetIndexBuffer(e.GetMesh().GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetVertexBuffers(0, 1, e.GetMesh().GetVertexBuffer().GetAddressOf(), &stride, &offset);
 	}
 }
 

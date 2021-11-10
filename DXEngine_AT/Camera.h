@@ -2,7 +2,7 @@
 
 #include <DirectXMath.h>
 
-namespace dx = DirectX;
+namespace DX = DirectX;
 
 class Camera
 {
@@ -11,25 +11,25 @@ public:
 	~Camera() = default;
 
 	void Update();
-	dx::XMMATRIX GetWorldProjectionMatrix();
+	DX::XMMATRIX GetWorldProjectionMatrix();
 
 	void Translate(float x, float y, float z);
 	void Rotate(float x, float y, float z, float angle);
 
 private:
 	//World Matrices
-	dx::XMMATRIX world;
+	DX::XMMATRIX world;
 
-	dx::XMMATRIX rotation;
-	dx::XMMATRIX scale;
-	dx::XMMATRIX translation;
+	DX::XMMATRIX rotation;
+	DX::XMMATRIX scale;
+	DX::XMMATRIX translation;
 
 	//Camera
-	dx::XMMATRIX camView;
-	dx::XMMATRIX camProjection;
+	DX::XMMATRIX camView;
+	DX::XMMATRIX camProjection;
 
-	dx::XMVECTOR camPosition;
-	dx::XMVECTOR camTarget;
-	dx::XMVECTOR camUp;
+	DX::XMVECTOR camPosition;
+	DX::XMVECTOR camTarget;
+	DX::XMVECTOR camUp;
 };
 

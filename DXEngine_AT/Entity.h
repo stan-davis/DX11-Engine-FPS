@@ -3,24 +3,36 @@
 #include "Mesh.h"
 #include "Math.h"
 
+#include <memory>
+
 class Entity
 {
 public:
-	Entity() = default;
-	Entity(Mesh _mesh, Vector3 _position);
+	Entity();
+	Entity(Mesh _mesh);
 
 	~Entity() = default;
 
-	Vector3 GetPosition() { return position; }
-	void SetPosition(Vector3 _position);
-	void SetRotation(Vector3 axis, float angle);
+	void Update();
+	void Draw();
 
 	DirectX::XMMATRIX GetMatrix() { return matrix; }
+
+	void Translate(Vector3 position);
+	void Rotate(Vector3 axis, float angle);
+	void Scale(Vector3 factor);
+	
 	Mesh GetMesh() { return mesh; }
 
 private:
+	void Init();
+
 	DirectX::XMMATRIX matrix;
-	Vector3 position = { 0, 0, 0 };
+
+	DirectX::XMMATRIX translation;
+	DirectX::XMMATRIX scale;
+	DirectX::XMMATRIX rotation;
+
 	Mesh mesh;
 };
 

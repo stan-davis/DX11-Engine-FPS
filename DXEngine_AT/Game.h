@@ -30,4 +30,3 @@ private:
 	float cam_x = 0.0f;
 	float cam_z = 0.0f;
 };
-

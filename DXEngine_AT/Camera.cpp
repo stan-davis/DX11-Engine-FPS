@@ -2,13 +2,15 @@
 
 Camera::Camera(float fov, float aspectRatio, float near, float far)
 {
-	//Set up camera TESTING ONLY
-	camPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.001f, 0.0f);
-	camTarget = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	camUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	world = DirectX::XMMatrixIdentity();
 
-	camView = DirectX::XMMatrixLookAtLH(camPosition, camTarget, camUp);
-	camProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, near, far);
+	//Set up camera
+	camPosition = DX::XMVectorSet(0.0f, 0.0f, 0.001f, 0.0f);
+	camTarget = DX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	camUp = DX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	camView = DX::XMMatrixLookAtLH(camPosition, camTarget, camUp);
+	camProjection = DX::XMMatrixPerspectiveFovLH(fov, aspectRatio, near, far);
 
 	//Required to draw objects in world space
 	Translate(0.0f, 0.0f, 0.0f);
@@ -17,11 +19,10 @@ Camera::Camera(float fov, float aspectRatio, float near, float far)
 
 void Camera::Update()
 {
-	world = DirectX::XMMatrixIdentity();
 	world = translation * rotation;
 }
 
-dx::XMMATRIX Camera::GetWorldProjectionMatrix()
+DX::XMMATRIX Camera::GetWorldProjectionMatrix()
 {
 	return world * camView * camProjection;
 }
@@ -33,6 +34,6 @@ void Camera::Translate(float x, float y, float z)
 
 void Camera::Rotate(float x, float y, float z, float angle)
 {
-	dx::XMVECTOR axis = dx::XMVectorSet(x, y, z, 0.0f);
-	rotation = dx::XMMatrixRotationAxis(axis, angle);
+	DX::XMVECTOR axis = DX::XMVectorSet(x, y, z, 0.0f);
+	rotation = DX::XMMatrixRotationAxis(axis, angle);
 }
