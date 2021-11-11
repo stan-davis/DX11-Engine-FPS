@@ -12,7 +12,7 @@ public:
 	Graphics(wrl::ComPtr<ID3D11Device> _device, wrl::ComPtr<ID3D11DeviceContext> _context);
 	~Graphics() = default;
 	
-	void UpdateBufferData(std::vector<Entity>& entities, DX::XMMATRIX cameraMatrix);
+	void UpdateBufferData(std::vector<std::unique_ptr<Entity>>& entities, DX::XMMATRIX cameraMatrix);
 
 private:
 	struct cBuffer

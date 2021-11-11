@@ -22,12 +22,12 @@ void Game::Update(float delta)
 	//Key input
 	if (input->isPressed(KEYS::W))
 	{
-		camera->Translate(Vector3(move_speed,0, move_speed));
+		camera->MoveForward(move_speed);
 	}
 
 	if (input->isPressed(KEYS::S))
 	{
-		camera->Translate(Vector3(-move_speed, 0, -move_speed));
+		camera->MoveForward(-move_speed);
 	}
 
 	if (input->isPressed(KEYS::D))
@@ -39,6 +39,11 @@ void Game::Update(float delta)
 	{
 		camera->RotateYAW(-rotation_speed);
 	}
+
+	for (auto& e : entities)
+	{
+		e->BillboardUpdate(camera->GetTransform());
+	}
 }
 
 void Game::Draw(float delta)
@@ -49,9 +54,7 @@ void Game::Draw(float delta)
 
 	//Buffer Update
 	for (auto& e : entities)
-	{
-		e.Draw();
-	}
+		e->Draw();
 	
 	graphics->UpdateBufferData(entities, camera->GetCameraMatrix());
 	
@@ -167,13 +170,13 @@ void Game::CreateMapData(std::string filePath)
 		{
 			char index = mapData[z * mapWidth + x];
 
-			Entity e;
+			Entity ent;
 
 			switch (index)
 			{
 			case '#':
-				e = Entity(wallMesh);
-				e.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
+				ent = Entity(wallMesh);
+				ent.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
 				break;
 			case '@':
 				//Create player camera
@@ -181,13 +184,13 @@ void Game::CreateMapData(std::string filePath)
 				camera->Translate(Vector3(x * cubeSize, 0, z * cubeSize));
 				break;
 			case 'e':
-				e = Entity(enemyMesh);
-				e.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
-				enemyIndex = index;
+				ent = Entity(enemyMesh);
+				ent.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
+				ent.isBillboard(true);
 				break;
 			}
 
-			entities.push_back(e);
+			entities.push_back(std::make_unique<Entity>(ent));
 		}
 
 	delete[] mapData;

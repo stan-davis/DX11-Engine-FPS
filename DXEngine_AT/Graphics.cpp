@@ -22,7 +22,7 @@ void Graphics::CreateConstantBuffer()
 	device->CreateBuffer(&cbbd, nullptr, constantBuffer.GetAddressOf());
 }
 
-void Graphics::UpdateBufferData(std::vector<Entity>& entities, DX::XMMATRIX cameraMatrix)
+void Graphics::UpdateBufferData(std::vector<std::unique_ptr<Entity>>& entities, DX::XMMATRIX cameraMatrix)
 {
 	UINT stride = sizeof(Mesh::Vertex);
 	UINT offset = 0;
@@ -30,11 +30,11 @@ void Graphics::UpdateBufferData(std::vector<Entity>& entities, DX::XMMATRIX came
 	for (auto& e : entities)
 	{
 		//Set Buffers
-		context->IASetIndexBuffer(e.GetMesh().GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetVertexBuffers(0, 1, e.GetMesh().GetVertexBuffer().GetAddressOf(), &stride, &offset);
+		context->IASetIndexBuffer(e->GetMesh().GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetVertexBuffers(0, 1, e->GetMesh().GetVertexBuffer().GetAddressOf(), &stride, &offset);
 
 		//Set world translation/rotation/scale
-		DX::XMMATRIX world = e.GetMatrix() * cameraMatrix;
+		DX::XMMATRIX world = e->GetMatrix() * cameraMatrix;
 		localConstantBuffer.WVP = DX::XMMatrixTranspose(world);
 
 		//Update Vertex Shader Constant Buffers
@@ -42,11 +42,11 @@ void Graphics::UpdateBufferData(std::vector<Entity>& entities, DX::XMMATRIX came
 		context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
 		//Update Pixel Shader Constant Buffers
-		context->PSSetShaderResources(0, 1, e.GetMesh().GetTexture().GetAddressOf());
-		context->PSSetSamplers(0, 1, e.GetMesh().GetSamplerState().GetAddressOf());
+		context->PSSetShaderResources(0, 1, e->GetMesh().GetTexture().GetAddressOf());
+		context->PSSetSamplers(0, 1, e->GetMesh().GetSamplerState().GetAddressOf());
 
 		//Draw the object
-		context->DrawIndexed((UINT)std::size(e.GetMesh().GetIndices()), 0, 0);
+		context->DrawIndexed((UINT)std::size(e->GetMesh().GetIndices()), 0, 0);
 	}
 }
 

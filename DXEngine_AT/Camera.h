@@ -10,6 +10,7 @@ public:
 	~Camera() = default;
 
 	void RotateYAW(float value);
+	void MoveForward(float value);
 
 	DX::XMMATRIX GetCameraMatrix();
 private:
@@ -30,5 +31,6 @@ private:
 	DX::XMVECTOR camTarget = DX::XMVectorSet(0, 0, 0, 0);;
 
 	float yaw = 0;
+	float forward = 0;
 };
 

@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include <cmath>
 
 Entity::Entity()
 {
@@ -8,6 +9,27 @@ Entity::Entity()
 Entity::Entity(Mesh _mesh) : mesh(_mesh)
 {
 	Init();
+}
+
+void Entity::SetTag(std::string _tag)
+{
+	tag = _tag;
+}
+
+void Entity::isBillboard(bool value)
+{
+	billboard = value;
+}
+
+void Entity::BillboardUpdate(Vector3 cameraPosition)
+{
+	if (billboard)
+	{
+		Vector3 distance = GetTransform() - cameraPosition;
+		float angle = std::atan2f(distance.x, distance.z) * (180 / 3.14f);
+		angle *= 0.0174532925f; //the magic number
+		Rotate({ 0,1,0 }, angle);
+	}
 }
 
 void Entity::Init()
@@ -27,18 +49,18 @@ void Entity::Draw()
 	matrix = scale * rotation * translation;
 }
 
-Vector3 Entity::GetTranslation()
+Vector3 Entity::GetTransform()
 {
 	Vector3 output = Vector3(0, 0, 0);
 	DX::XMVECTOR sca;
 	DX::XMVECTOR rot;
-	DX::XMVECTOR vec;
+	DX::XMVECTOR tra;
 
-	DX::XMMatrixDecompose(&sca, &rot, &vec, translation);
+	DX::XMMatrixDecompose(&sca, &rot, &tra, translation);
 	
-	output.x = DX::XMVectorGetX(vec);
-	output.y = DX::XMVectorGetY(vec);
-	output.z = DX::XMVectorGetZ(vec);
+	output.x = DX::XMVectorGetX(tra);
+	output.y = DX::XMVectorGetY(tra);
+	output.z = DX::XMVectorGetZ(tra);
 
 	return output;
 }
@@ -46,13 +68,15 @@ Vector3 Entity::GetTranslation()
 Vector3 Entity::GetRotation()
 {
 	Vector3 output = Vector3(0, 0, 0);
-	DX::XMVECTOR vec;
+	DX::XMVECTOR sca;
+	DX::XMVECTOR rot;
+	DX::XMVECTOR tra;
 
-	DX::XMMatrixDecompose(nullptr, &vec, nullptr, translation);
+	DX::XMMatrixDecompose(&sca, &rot, &tra, translation);
 
-	output.x = DX::XMVectorGetX(vec);
-	output.y = DX::XMVectorGetY(vec);
-	output.z = DX::XMVectorGetZ(vec);
+	output.x = DX::XMVectorGetX(rot);
+	output.y = DX::XMVectorGetY(rot);
+	output.z = DX::XMVectorGetZ(rot);
 
 	return output;
 }
@@ -60,13 +84,15 @@ Vector3 Entity::GetRotation()
 Vector3 Entity::GetScale()
 {
 	Vector3 output = Vector3(0, 0, 0);
-	DX::XMVECTOR vec;
+	DX::XMVECTOR sca;
+	DX::XMVECTOR rot;
+	DX::XMVECTOR tra;
 
-	DX::XMMatrixDecompose(&vec, nullptr, nullptr, translation);
+	DX::XMMatrixDecompose(&sca, &rot, &tra, translation);
 
-	output.x = DX::XMVectorGetX(vec);
-	output.y = DX::XMVectorGetY(vec);
-	output.z = DX::XMVectorGetZ(vec);
+	output.x = DX::XMVectorGetX(sca);
+	output.y = DX::XMVectorGetY(sca);
+	output.z = DX::XMVectorGetZ(sca);
 
 	return output;
 }

@@ -10,8 +10,8 @@ namespace DX = DirectX;
 class Entity
 {
 public:
-	Entity();
-	Entity(Mesh _mesh);
+	explicit Entity();
+	explicit Entity(Mesh _mesh);
 
 	~Entity() = default;
 
@@ -19,7 +19,7 @@ public:
 	void Draw();
 
 	DirectX::XMMATRIX GetMatrix() { return matrix; }
-	Vector3 GetTranslation();
+	Vector3 GetTransform();
 	Vector3 GetRotation();
 	Vector3 GetScale();
 
@@ -28,6 +28,12 @@ public:
 	void Scale(Vector3 factor);
 	
 	Mesh GetMesh() { return mesh; }
+
+	std::string Tag() { return tag; }
+	void SetTag(std::string _tag);
+
+	void isBillboard(bool value);
+	void BillboardUpdate(Vector3 cameraPosition);
 
 protected:
 	void Init();
@@ -39,5 +45,7 @@ protected:
 	DX::XMMATRIX rotation;
 
 	Mesh mesh;
+	std::string tag;
+	bool billboard = false;
 };
 

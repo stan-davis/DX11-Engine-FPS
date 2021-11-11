@@ -23,8 +23,5 @@ private:
 
 	//Level
 	void CreateMapData(std::string filePath);
-	std::vector<Entity> entities;
-
-	//Testing
-	int enemyIndex = 0;
+	std::vector<std::unique_ptr<Entity>> entities;
 };
