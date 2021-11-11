@@ -25,8 +25,6 @@ private:
 	void CreateMapData(std::string filePath);
 	std::vector<Entity> entities;
 
-	//Player movement
-	float cam_angle = 0.0f;
-	float cam_x = 0.0f;
-	float cam_z = 0.0f;
+	//Testing
+	int enemyIndex = 0;
 };

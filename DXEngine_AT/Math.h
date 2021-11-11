@@ -10,7 +10,4 @@ struct Vector3
 	Vector3 operator-(const Vector3& vec3) const;
 	Vector3 operator*(const Vector3& vec3) const;
 	Vector3 operator/(const Vector3& vec3) const;
-
-	float Distance(const Vector3& vec3) const;
-	float Magnitude(const Vector3& vec3) const;
 };

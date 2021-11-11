@@ -5,6 +5,8 @@
 
 #include <memory>
 
+namespace DX = DirectX;
+
 class Entity
 {
 public:
@@ -17,6 +19,9 @@ public:
 	void Draw();
 
 	DirectX::XMMATRIX GetMatrix() { return matrix; }
+	Vector3 GetTranslation();
+	Vector3 GetRotation();
+	Vector3 GetScale();
 
 	void Translate(Vector3 position);
 	void Rotate(Vector3 axis, float angle);
@@ -24,14 +29,14 @@ public:
 	
 	Mesh GetMesh() { return mesh; }
 
-private:
+protected:
 	void Init();
 
-	DirectX::XMMATRIX matrix;
+	DX::XMMATRIX matrix;
 
-	DirectX::XMMATRIX translation;
-	DirectX::XMMATRIX scale;
-	DirectX::XMMATRIX rotation;
+	DX::XMMATRIX translation;
+	DX::XMMATRIX scale;
+	DX::XMMATRIX rotation;
 
 	Mesh mesh;
 };

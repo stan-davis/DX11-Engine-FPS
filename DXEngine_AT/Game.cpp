@@ -11,8 +11,6 @@ void Game::Start()
 	graphics = std::make_unique<Graphics>(device, context);
 
 	CreateMapData("test_map.txt");
-
-	camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
 }
 
 void Game::Update(float delta)
@@ -22,32 +20,25 @@ void Game::Update(float delta)
 	float rotation_speed = 4 * delta;
 
 	//Key input
-	if (input->isPressed(KEYS::A))
-	{
-		cam_angle -= rotation_speed;
-	}
-
-	if (input->isPressed(KEYS::D))
-	{
-		cam_angle += rotation_speed;
-	}
-
 	if (input->isPressed(KEYS::W))
 	{
-		cam_x += std::sinf(cam_angle) * move_speed;
-		cam_z += std::cosf(cam_angle) * move_speed;
+		camera->Translate(Vector3(move_speed,0, move_speed));
 	}
 
 	if (input->isPressed(KEYS::S))
 	{
-		cam_x -= std::sinf(cam_angle) * move_speed;
-		cam_z -= std::cosf(cam_angle) * move_speed;
+		camera->Translate(Vector3(-move_speed, 0, -move_speed));
 	}
 
-	//Adjust camera
-	camera->Translate(cam_x, 0, cam_z);
-	camera->Rotate(0, 1, 0, -cam_angle);
-	camera->Update();
+	if (input->isPressed(KEYS::D))
+	{
+		camera->RotateYAW(rotation_speed);
+	}
+
+	if (input->isPressed(KEYS::A))
+	{
+		camera->RotateYAW(-rotation_speed);
+	}
 }
 
 void Game::Draw(float delta)
@@ -62,8 +53,8 @@ void Game::Draw(float delta)
 		e.Draw();
 	}
 	
-	graphics->UpdateBufferData(entities, camera->GetWorldProjectionMatrix());
-
+	graphics->UpdateBufferData(entities, camera->GetCameraMatrix());
+	
 	//Present
 	swapchain->Present(0, 0);
 }
@@ -185,13 +176,14 @@ void Game::CreateMapData(std::string filePath)
 				e.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
 				break;
 			case '@':
-				//Spawn Player
-				cam_x -= x * cubeSize;
-				cam_z -= z * cubeSize;
+				//Create player camera
+				camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
+				camera->Translate(Vector3(x * cubeSize, 0, z * cubeSize));
 				break;
 			case 'e':
 				e = Entity(enemyMesh);
 				e.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
+				enemyIndex = index;
 				break;
 			}
 

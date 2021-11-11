@@ -1,39 +1,37 @@
 #include "Camera.h"
 
-Camera::Camera(float fov, float aspectRatio, float near, float far)
+Camera::Camera(float fov, float aspectRatio, float _near, float _far)
 {
-	world = DirectX::XMMatrixIdentity();
-
-	//Set up camera
-	camPosition = DX::XMVectorSet(0.0f, 0.0f, 0.001f, 0.0f);
-	camTarget = DX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	camUp = DX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	camView = DX::XMMatrixLookAtLH(camPosition, camTarget, camUp);
-	camProjection = DX::XMMatrixPerspectiveFovLH(fov, aspectRatio, near, far);
-
-	//Required to draw objects in world space
-	Translate(0.0f, 0.0f, 0.0f);
-	Rotate(0.0f, 1.0f, 0.0f, 0.0f);
+	Init();
+	projectionMatrix = DX::XMMatrixPerspectiveFovLH(fov, aspectRatio, _near, _far);
 }
 
-void Camera::Update()
+void Camera::RotateYAW(float value)
 {
-	world = translation * rotation;
+	yaw += value;
 }
 
-DX::XMMATRIX Camera::GetWorldProjectionMatrix()
+DX::XMMATRIX Camera::GetCameraMatrix()
 {
-	return world * camView * camProjection;
-}
+	rotation = DX::XMMatrixRotationRollPitchYaw(0, yaw, 0);
 
-void Camera::Translate(float x, float y, float z)
-{
-	translation = DirectX::XMMatrixTranslation(x, y, z);
-}
+	camTarget = DX::XMVector3TransformCoord(worldForward, rotation);
+	camTarget = DX::XMVector3Normalize(camTarget);
 
-void Camera::Rotate(float x, float y, float z, float angle)
-{
-	DX::XMVECTOR axis = DX::XMVectorSet(x, y, z, 0.0f);
-	rotation = DX::XMMatrixRotationAxis(axis, angle);
+	DX::XMMATRIX rotateY = DX::XMMatrixRotationY(yaw);
+	
+	camUp = DX::XMVector3TransformCoord(camUp, rotateY);
+	camForward = DX::XMVector3TransformCoord(worldForward, rotateY);
+
+	DX::XMVECTOR move = DX::XMVectorSet(GetTranslation().x, 0, GetTranslation().z, 0);
+	DX::XMVECTOR position = DX::XMVectorMultiply(camForward, move);
+	camPosition = DX::XMVectorAdd(camPosition, position);
+
+	Translate(Vector3(0, 0, 0));
+
+	camTarget = DX::XMVectorAdd(camPosition, camTarget);
+
+	viewMatrix = DX::XMMatrixLookAtLH(camPosition, camTarget, camUp);
+
+	return matrix * viewMatrix * projectionMatrix;
 }

@@ -12,9 +12,9 @@ Entity::Entity(Mesh _mesh) : mesh(_mesh)
 
 void Entity::Init()
 {
-	matrix = DirectX::XMMatrixIdentity();
-	scale = DirectX::XMMatrixIdentity();
-	rotation = DirectX::XMMatrixIdentity();
+	matrix = DX::XMMatrixIdentity();
+	scale = DX::XMMatrixIdentity();
+	rotation = DX::XMMatrixIdentity();
 }
 
 void Entity::Update()
@@ -27,18 +27,62 @@ void Entity::Draw()
 	matrix = scale * rotation * translation;
 }
 
+Vector3 Entity::GetTranslation()
+{
+	Vector3 output = Vector3(0, 0, 0);
+	DX::XMVECTOR sca;
+	DX::XMVECTOR rot;
+	DX::XMVECTOR vec;
+
+	DX::XMMatrixDecompose(&sca, &rot, &vec, translation);
+	
+	output.x = DX::XMVectorGetX(vec);
+	output.y = DX::XMVectorGetY(vec);
+	output.z = DX::XMVectorGetZ(vec);
+
+	return output;
+}
+
+Vector3 Entity::GetRotation()
+{
+	Vector3 output = Vector3(0, 0, 0);
+	DX::XMVECTOR vec;
+
+	DX::XMMatrixDecompose(nullptr, &vec, nullptr, translation);
+
+	output.x = DX::XMVectorGetX(vec);
+	output.y = DX::XMVectorGetY(vec);
+	output.z = DX::XMVectorGetZ(vec);
+
+	return output;
+}
+
+Vector3 Entity::GetScale()
+{
+	Vector3 output = Vector3(0, 0, 0);
+	DX::XMVECTOR vec;
+
+	DX::XMMatrixDecompose(&vec, nullptr, nullptr, translation);
+
+	output.x = DX::XMVectorGetX(vec);
+	output.y = DX::XMVectorGetY(vec);
+	output.z = DX::XMVectorGetZ(vec);
+
+	return output;
+}
+
 void Entity::Translate(Vector3 position)
 {
-	translation = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+	translation = DX::XMMatrixTranslation(position.x, position.y, position.z);
 }
 
 void Entity::Rotate(Vector3 axis, float angle)
 {
-	DirectX::XMVECTOR _axis = DirectX::XMVectorSet(axis.x, axis.y, axis.z, 0.0f);
-	rotation = DirectX::XMMatrixRotationAxis(_axis, angle);
+	DX::XMVECTOR _axis = DX::XMVectorSet(axis.x, axis.y, axis.z, 0.0f);
+	rotation = DX::XMMatrixRotationAxis(_axis, angle);
 }
 
 void Entity::Scale(Vector3 factor)
 {
-	scale = DirectX::XMMatrixScaling(factor.x, factor.y, factor.z);
+	scale = DX::XMMatrixScaling(factor.x, factor.y, factor.z);
 }

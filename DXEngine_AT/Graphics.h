@@ -5,7 +5,6 @@
 #pragma comment(lib, "d3dcompiler.lib")
 
 namespace wrl = Microsoft::WRL;
-namespace DX = DirectX;
 
 class Graphics
 {
