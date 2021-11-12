@@ -89,80 +89,11 @@ void Game::CreateMapData(std::string filePath)
 		OutputDebugString(L"Failed to open level data\n");
 	}
 
-	//Cube Shape
-	std::vector<Mesh::Vertex> verts =
-	{
-		// Front Face
-		 Mesh::Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-
-		 // Back Face
-		 Mesh::Vertex(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f),
-		 Mesh::Vertex(1.0f, -1.0f, 1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(1.0f,  1.0f, 1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f),
-
-		 // Top Face
-		 Mesh::Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(1.0f, 1.0f,  1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(1.0f, 1.0f, -1.0f, 1.0f, 1.0f),
-
-		 // Bottom Face
-		 Mesh::Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-		 Mesh::Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(1.0f, -1.0f,  1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f),
-
-		 // Left Face
-		 Mesh::Vertex(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-
-		 // Right Face
-		 Mesh::Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		 Mesh::Vertex(1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		 Mesh::Vertex(1.0f,  1.0f,  1.0f, 1.0f, 0.0f),
-		 Mesh::Vertex(1.0f, -1.0f,  1.0f, 1.0f, 1.0f),
-	};
-
-	std::vector<DWORD> ind =
-	{
-		// Front Face
-		0,  1,  2,
-		0,  2,  3,
-
-		// Back Face
-		4,  5,  6,
-		4,  6,  7,
-
-		// Top Face
-		8,  9, 10,
-		8, 10, 11,
-
-		// Bottom Face
-		12, 13, 14,
-		12, 14, 15,
-
-		// Left Face
-		16, 17, 18,
-		16, 18, 19,
-
-		// Right Face
-		20, 21, 22,
-		20, 22, 23
-	};
-
 	//Wall
-	Mesh::Primitive CUBE = Mesh::Primitive(verts, ind);
-	Mesh wallMesh = Mesh(CUBE, L"texture_stone.png", device);
+	Mesh wallMesh = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
 
 	//Enemy stuff
-	Mesh::Primitive PLANE = Mesh::Primitive(verts, ind);
-	Mesh enemyMesh = Mesh(PLANE, L"demon.png", device);
+	Mesh enemyMesh = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
 
 	//Draw map
 	for(int x = 0; x < mapWidth; x++)

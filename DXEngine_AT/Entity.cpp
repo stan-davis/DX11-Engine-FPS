@@ -26,7 +26,7 @@ void Entity::BillboardUpdate(Vector3 cameraPosition)
 	if (billboard)
 	{
 		Vector3 distance = GetTransform() - cameraPosition;
-		float angle = std::atan2f(distance.x, distance.z) * (180 / 3.14f);
+		float angle = std::atan2f(distance.x, distance.z) * (180 / DX::XM_PI);
 		angle *= 0.0174532925f; //the magic number
 		Rotate({ 0,1,0 }, angle);
 	}

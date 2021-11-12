@@ -1,5 +1,9 @@
+#define TINYOBJLOADER_IMPLEMENTATION
+
 #include "Mesh.h"
+#include "tiny_obj_loader.h"
 #include <WICTextureLoader.h>
+#include <unordered_map>
 
 Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device) : vertices(_vertices), indices(_indices), texturePath(_texturePath), device(_device)
 {
@@ -10,6 +14,53 @@ Mesh::Mesh(Primitive primitive, std::wstring _texturePath, wrl::ComPtr<ID3D11Dev
 {
 	Initilize();
 }
+
+Mesh::Mesh(std::string _modelPath, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device) : modelPath(_modelPath), texturePath(_texturePath), device(_device)
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string warn, err;
+
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, modelPath.c_str()))
+	{
+		throw std::runtime_error(warn + err);
+		OutputDebugString(L"Failed to load obj\n");
+	}
+	else
+	{
+		OutputDebugString(L"Obj loaded successfully!\n");
+	}
+
+	for (const auto& s : shapes)
+		for (const auto& index : s.mesh.indices)
+		{
+			Vertex vertex;
+
+			vertex.position =
+			{
+					attrib.vertices[3 * size_t(index.vertex_index) + 0],
+					attrib.vertices[3 * size_t(index.vertex_index) + 1],
+					attrib.vertices[3 * size_t(index.vertex_index) + 2]
+			};
+
+			if (index.texcoord_index >= 0)
+			{
+				vertex.texCoord =
+				{
+						attrib.texcoords[2 * size_t(index.texcoord_index) + 0],
+						1.0f - attrib.texcoords[2 * size_t(index.texcoord_index) + 1]
+				};
+			}
+
+			vertices.push_back(vertex);
+			indices.push_back(indices.size());
+		}
+
+	Initilize();
+}
+
+
 
 void Mesh::Initilize()
 {

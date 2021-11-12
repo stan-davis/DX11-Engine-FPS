@@ -25,34 +25,49 @@
     <Filter Include="Header Files\Game\Objects">
       <UniqueIdentifier>{dea19fd3-1855-4fd9-8f35-f50e4165843d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{7746af42-1d82-4c8a-81d1-fcd1b0b2dbad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{a7daf795-ec7e-42c5-afc8-66c011932c1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{358f63bc-954d-4a74-b283-8dc7ed939992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{b74fd77e-9f44-43b4-a7ab-f4482a774f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{b694642e-0674-4789-8bd1-9e4d74e3aad0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="DirectXApp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Math.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +98,9 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
+    <ClInclude Include="tiny_obj_loader.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShader.hlsl" />
@@ -92,11 +110,16 @@
     <Text Include="test_map.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="texture_stone.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Textures\wall_brick.png">
+      <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="demon.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="textures\demon.png">
+      <Filter>Resource Files\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Models\cube_wall.obj">
+      <Filter>Resource Files\Models</Filter>
+    </Object>
   </ItemGroup>
 </Project>

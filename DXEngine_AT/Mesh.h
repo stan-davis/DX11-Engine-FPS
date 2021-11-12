@@ -17,6 +17,11 @@ public:
 
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT2 texCoord;
+
+		bool operator==(const Vertex& other) const
+		{
+			return position.x == other.position.x && position.y == other.position.y && position.z == other.position.z && texCoord.x == other.texCoord.x && texCoord.y == other.texCoord.y;
+		}
 	};
 	
 	struct Primitive
@@ -31,6 +36,7 @@ public:
 	Mesh() = default;
 	Mesh(std::vector<Vertex> _vertices, std::vector<DWORD> _indices, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device);
 	Mesh(Primitive primitive, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device);
+	Mesh(std::string _modelPath, std::wstring _texturePath, wrl::ComPtr<ID3D11Device> _device);
 
 	~Mesh() = default;
 
@@ -58,6 +64,7 @@ private:
 	std::vector<DWORD> indices;
 
 	std::wstring texturePath;
+	std::string modelPath;
 
 	wrl::ComPtr<ID3D11ShaderResourceView> texture;
 	wrl::ComPtr<ID3D11SamplerState> textureSamplerState;
