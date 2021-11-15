@@ -16,7 +16,7 @@ void Entity::SetTag(std::string _tag)
 	tag = _tag;
 }
 
-void Entity::isBillboard(bool value)
+void Entity::IsBillboard(bool value)
 {
 	billboard = value;
 }
@@ -32,6 +32,11 @@ void Entity::BillboardUpdate(Vector3 cameraPosition)
 	}
 }
 
+void Entity::AddCollider(Collider _collider)
+{
+	collider = _collider;
+}
+
 void Entity::Init()
 {
 	matrix = DX::XMMatrixIdentity();
@@ -41,7 +46,7 @@ void Entity::Init()
 
 void Entity::Update()
 {
-	
+	collider.UpdateCollider(GetTransform());
 }
 
 void Entity::Draw()
@@ -51,48 +56,33 @@ void Entity::Draw()
 
 Vector3 Entity::GetTransform()
 {
-	Vector3 output = Vector3(0, 0, 0);
-	DX::XMVECTOR sca;
-	DX::XMVECTOR rot;
-	DX::XMVECTOR tra;
+	Vector3 output = { 0,0,0 };
 
-	DX::XMMatrixDecompose(&sca, &rot, &tra, translation);
-	
-	output.x = DX::XMVectorGetX(tra);
-	output.y = DX::XMVectorGetY(tra);
-	output.z = DX::XMVectorGetZ(tra);
+	output.x = DX::XMVectorGetX(translation.r[3]);
+	output.y = DX::XMVectorGetY(translation.r[3]);
+	output.z = DX::XMVectorGetZ(translation.r[3]);
 
 	return output;
 }
 
 Vector3 Entity::GetRotation()
 {
-	Vector3 output = Vector3(0, 0, 0);
-	DX::XMVECTOR sca;
-	DX::XMVECTOR rot;
-	DX::XMVECTOR tra;
+	Vector3 output = { 0,0,0 };
 
-	DX::XMMatrixDecompose(&sca, &rot, &tra, translation);
-
-	output.x = DX::XMVectorGetX(rot);
-	output.y = DX::XMVectorGetY(rot);
-	output.z = DX::XMVectorGetZ(rot);
+	output.x = DX::XMVectorGetX(translation.r[2]);
+	output.y = DX::XMVectorGetY(translation.r[2]);
+	output.z = DX::XMVectorGetZ(translation.r[2]);
 
 	return output;
 }
 
 Vector3 Entity::GetScale()
 {
-	Vector3 output = Vector3(0, 0, 0);
-	DX::XMVECTOR sca;
-	DX::XMVECTOR rot;
-	DX::XMVECTOR tra;
+	Vector3 output = { 0,0,0 };
 
-	DX::XMMatrixDecompose(&sca, &rot, &tra, translation);
-
-	output.x = DX::XMVectorGetX(sca);
-	output.y = DX::XMVectorGetY(sca);
-	output.z = DX::XMVectorGetZ(sca);
+	output.x = DX::XMVectorGetX(translation.r[1]);
+	output.y = DX::XMVectorGetY(translation.r[1]);
+	output.z = DX::XMVectorGetZ(translation.r[1]);
 
 	return output;
 }

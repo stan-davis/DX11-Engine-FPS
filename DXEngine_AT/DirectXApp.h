@@ -28,7 +28,7 @@ public:
 	HRESULT InitWindow();
 	HRESULT InitDirectX();
 	HRESULT Run();
-
+	
 	void UpdateTime();
 
 	//Virtual Methods for Gameplay

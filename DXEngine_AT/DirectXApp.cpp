@@ -1,4 +1,7 @@
 #include "DirectXApp.h"
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
 
 DiectXApp* DiectXApp::DXInstance = 0;
 
@@ -65,7 +68,7 @@ HRESULT DiectXApp::InitWindow()
 			return HRESULT_FROM_WIN32(lastError);
 	}
 
-	RECT wr = { 0, 0, windowWidth, windowHeight };
+	RECT wr = { 0, 0, static_cast<LONG>(windowWidth), static_cast<LONG>(windowHeight) };
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
 	//Convert Window Title
@@ -77,7 +80,7 @@ HRESULT DiectXApp::InitWindow()
 	hWnd = CreateWindowEx(
 		0,
 		wc.lpszClassName,
-		w_title,
+        w_title,
 		WS_OVERLAPPEDWINDOW,
 		300,
 		300,
@@ -88,7 +91,7 @@ HRESULT DiectXApp::InitWindow()
 		hInstance,
 		0);
 
-	delete[] w_title; //delete pointer after use
+	//delete[] w_title; //delete pointer after use
 
 	if (hWnd == nullptr)
 	{

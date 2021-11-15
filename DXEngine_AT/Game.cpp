@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include "Logger.h"
 
 Game::Game(HINSTANCE hInstance) : DiectXApp(hInstance, "A DirectX11 Game", 800, 600) {}
 
@@ -40,9 +41,18 @@ void Game::Update(float delta)
 		camera->RotateYAW(-rotation_speed);
 	}
 
+	camera->Update();
+
 	for (auto& e : entities)
 	{
+		e->Update();
 		e->BillboardUpdate(camera->GetTransform());
+			
+		if (e->GetCollider().IsColliding(camera->GetCollider()))
+		{
+			//resolve
+		}
+
 	}
 }
 
@@ -66,7 +76,7 @@ void Game::CreateMapData(std::string filePath)
 {
 	int mapWidth = 0;
 	int mapHeight = 0;
-	int cubeSize = 2;
+	float cubeSize = 2;
 
 	char* mapData = nullptr;
 
@@ -89,35 +99,36 @@ void Game::CreateMapData(std::string filePath)
 		OutputDebugString(L"Failed to open level data\n");
 	}
 
-	//Wall
-	Mesh wallMesh = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
-
-	//Enemy stuff
-	Mesh enemyMesh = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
-
+	//Load models
+	Mesh wallModel = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
+	Mesh enemyModel = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
+	
 	//Draw map
 	for(int x = 0; x < mapWidth; x++)
 		for (int z = 0; z < mapHeight; z++)
 		{
 			char index = mapData[z * mapWidth + x];
-
+			Vector3 pos = { static_cast<float>(x * cubeSize), 0, static_cast<float>(z * cubeSize) };
+			Collider rectCollider = Collider(pos, { cubeSize, 0, cubeSize });
 			Entity ent;
 
 			switch (index)
 			{
 			case '#':
-				ent = Entity(wallMesh);
-				ent.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
+				ent = Entity(wallModel);
+				ent.Translate(pos);
+				ent.AddCollider(rectCollider);
 				break;
 			case '@':
 				//Create player camera
 				camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
-				camera->Translate(Vector3(x * cubeSize, 0, z * cubeSize));
+				camera->Translate(pos);
+				ent.AddCollider(rectCollider);
 				break;
 			case 'e':
-				ent = Entity(enemyMesh);
-				ent.Translate({ static_cast<float>(x * cubeSize), 0.0f, static_cast<float>(z * cubeSize) });
-				ent.isBillboard(true);
+				ent = Entity(enemyModel);
+				ent.Translate(pos);
+				ent.IsBillboard(true);
 				break;
 			}
 

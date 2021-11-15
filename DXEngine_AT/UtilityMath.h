@@ -12,6 +12,9 @@ struct Vector3
 	Vector3 operator*(const Vector3& vec3) const;
 	Vector3 operator/(const Vector3& vec3) const;
 
+	Vector3 operator*(const float& f) const;
+	Vector3 operator/(const float& f) const;
+
 	float Magnitude() const;
 	void Normalize();
 };

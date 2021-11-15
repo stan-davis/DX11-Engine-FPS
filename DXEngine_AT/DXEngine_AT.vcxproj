@@ -142,26 +142,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="DirectXApp.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Math.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="UtilityMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="DirectXApp.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Keys.h" />
-    <ClInclude Include="Math.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="UtilityMath.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

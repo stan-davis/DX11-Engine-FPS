@@ -1,7 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Mesh.h"
-#include "Math.h"
+#include "UtilityMath.h"
+#include "Collider.h"
 
 #include <memory>
 
@@ -26,14 +27,17 @@ public:
 	void Translate(Vector3 position);
 	void Rotate(Vector3 axis, float angle);
 	void Scale(Vector3 factor);
-	
-	Mesh GetMesh() { return mesh; }
+
+ 	Mesh GetMesh() { return mesh; }
 
 	std::string Tag() { return tag; }
 	void SetTag(std::string _tag);
 
-	void isBillboard(bool value);
+	void IsBillboard(bool value);
 	void BillboardUpdate(Vector3 cameraPosition);
+
+	void AddCollider(Collider _collider);
+	Collider GetCollider() { return collider; }
 
 protected:
 	void Init();
@@ -45,6 +49,8 @@ protected:
 	DX::XMMATRIX rotation;
 
 	Mesh mesh;
+	Collider collider;
+
 	std::string tag;
 	bool billboard = false;
 };
