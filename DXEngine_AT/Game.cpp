@@ -47,12 +47,6 @@ void Game::Update(float delta)
 	{
 		e->Update();
 		e->BillboardUpdate(camera->GetTransform());
-			
-		if (e->GetCollider().IsColliding(camera->GetCollider()))
-		{
-			//resolve
-		}
-
 	}
 }
 
@@ -99,40 +93,30 @@ void Game::CreateMapData(std::string filePath)
 		OutputDebugString(L"Failed to open level data\n");
 	}
 
-	//Load models
-	Mesh wallModel = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
-	Mesh enemyModel = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
-	
+	wallModel = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
+
 	//Draw map
 	for(int x = 0; x < mapWidth; x++)
 		for (int z = 0; z < mapHeight; z++)
 		{
 			char index = mapData[z * mapWidth + x];
 			Vector3 pos = { static_cast<float>(x * cubeSize), 0, static_cast<float>(z * cubeSize) };
-			Collider rectCollider = Collider(pos, { cubeSize, 0, cubeSize });
-			Entity ent;
+			//Entity e = Entity(wallModel);
 
 			switch (index)
 			{
 			case '#':
-				ent = Entity(wallModel);
-				ent.Translate(pos);
-				ent.AddCollider(rectCollider);
+
 				break;
 			case '@':
 				//Create player camera
 				camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
 				camera->Translate(pos);
-				ent.AddCollider(rectCollider);
 				break;
 			case 'e':
-				ent = Entity(enemyModel);
-				ent.Translate(pos);
-				ent.IsBillboard(true);
+
 				break;
 			}
-
-			entities.push_back(std::make_unique<Entity>(ent));
 		}
 
 	delete[] mapData;

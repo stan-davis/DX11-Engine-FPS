@@ -28,16 +28,13 @@ public:
 	void Rotate(Vector3 axis, float angle);
 	void Scale(Vector3 factor);
 
- 	Mesh GetMesh() { return mesh; }
+ 	Mesh GetMesh() { return *mesh; }
 
 	std::string Tag() { return tag; }
 	void SetTag(std::string _tag);
 
 	void IsBillboard(bool value);
 	void BillboardUpdate(Vector3 cameraPosition);
-
-	void AddCollider(Collider _collider);
-	Collider GetCollider() { return collider; }
 
 protected:
 	void Init();
@@ -48,8 +45,8 @@ protected:
 	DX::XMMATRIX scale;
 	DX::XMMATRIX rotation;
 
-	Mesh mesh;
-	Collider collider;
+	std::unique_ptr<Mesh> mesh;
+	std::unique_ptr<Collider> collider;
 
 	std::string tag;
 	bool billboard = false;

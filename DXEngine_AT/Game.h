@@ -24,4 +24,8 @@ private:
 	//Level
 	void CreateMapData(std::string filePath);
 	std::vector<std::unique_ptr<Entity>> entities;
+
+	//Meshes
+	Mesh wallModel;
+	//Mesh enemyModel = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
 };

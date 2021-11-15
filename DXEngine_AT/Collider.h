@@ -1,35 +1,28 @@
 #pragma once
 #include "UtilityMath.h"
+#include <DirectXMath.h>
+#include <vector>
+
+namespace DX = DirectX;
 
 class Collider
 {
 public:
-	enum class ColliderShape
+	struct RectColliderObject
 	{
-		NONE,
-		RECT,
-		SPHERE
+		DX::XMVECTOR& minVertex;
+		DX::XMVECTOR& maxVertex;
 	};
 
 	Collider() = default;
-	Collider(Vector3 _position, Vector3 _size) : position(_position), size(_size), colliderShape(ColliderShape::RECT) {}
-	Collider(Vector3 _position, float _radius) : position(_position), radius(_radius), colliderShape(ColliderShape::SPHERE) {}
 	~Collider() = default;
 
-	void UpdateCollider(Vector3 _position) { position = _position; }
-	bool IsColliding(Collider collider);
-
-	ColliderShape GetColliderType() { return colliderShape; }
-	Vector3 GetSize() { return size; }
-	float GetRadius() { return radius; }
-	Vector3 GetPosition() { return position; }
+	bool RectCollision(RectColliderObject o1, RectColliderObject o2);
+	void CalculateAABB(std::vector<DX::XMFLOAT3> verts, DX::XMMATRIX& worldSpace);
 
 private:
-	ColliderShape colliderShape = ColliderShape::NONE;
-	Vector3 size = { 0,0,0 };
-	Vector3 position = { 0,0,0 };
-	float radius = 0.0f;
-
-	bool RectCollider(Collider& collider);
+	std::vector<DX::XMFLOAT3> vertices;
+	DX::XMMATRIX matrix;
+	RectColliderObject colliderObject;
 };
 

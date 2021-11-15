@@ -1,39 +1,40 @@
 #include "Collider.h"
 
-bool Collider::IsColliding(Collider collider)
+bool Collider::RectCollision(RectColliderObject o1, RectColliderObject o2)
 {
-    bool ret = RectCollider(collider);
-    
-    /*
-    switch (collider.GetColliderType())
-    {
-        case ColliderShape::RECT:
-            ret = RectCollider(collider);
-            break;
-        case ColliderShape::SPHERE:
-            //do nothing for now
-            break;
-        case ColliderShape::NONE:
-            break;
-    }
-    */
+	if (DX::XMVectorGetX(o1.maxVertex) > DX::XMVectorGetX(o2.minVertex))
+		if (DX::XMVectorGetX(o1.minVertex) < DX::XMVectorGetX(o2.maxVertex))
+			if (DX::XMVectorGetY(o1.maxVertex) > DX::XMVectorGetY(o2.minVertex))
+				if (DX::XMVectorGetY(o1.minVertex) < DX::XMVectorGetY(o2.maxVertex))
+					if (DX::XMVectorGetZ(o1.maxVertex) > DX::XMVectorGetZ(o2.minVertex))
+						if (DX::XMVectorGetZ(o1.minVertex) < DX::XMVectorGetZ(o2.maxVertex))
+							return true;
 
-    return ret;
+	return false;
 }
 
-bool Collider::RectCollider(Collider& collider)
+void Collider::CalculateAABB(std::vector<DX::XMFLOAT3> verts, DX::XMMATRIX& worldSpace)
 {
-    //AABB
-    Vector3 ap = position;
-    Vector3 as = size;
+	vertices = verts;
+	matrix = worldSpace;
 
-    Vector3 tp = collider.GetPosition();
-    Vector3 ts = collider.GetSize();
+	DX::XMFLOAT3 minVertex = DX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+	DX::XMFLOAT3 maxVertex = DX::XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-    bool ret = ap.x + as.x >= tp.x &&
-        tp.x + ts.x >= ap.x &&
-        ap.z + as.z >= tp.z &&
-        tp.z + ts.z >= ap.z;
+	for (int i = 0; i < 8; i++)
+	{
+		DX::XMVECTOR vert = DX::XMVectorSet(vertices[i].x, vertices[i].y, vertices[i].z, 0);
+		vert = DX::XMVector3TransformCoord(vert, matrix);
 
-    return ret;
+		minVertex.x = std::min(minVertex.x, DX::XMVectorGetX(vert));
+		minVertex.y = std::min(minVertex.y, DX::XMVectorGetY(vert));
+		minVertex.z = std::min(minVertex.z, DX::XMVectorGetZ(vert));
+
+		maxVertex.x = std::max(maxVertex.x, DX::XMVectorGetX(vert));
+		maxVertex.y = std::max(maxVertex.y, DX::XMVectorGetY(vert));
+		maxVertex.z = std::max(maxVertex.z, DX::XMVectorGetZ(vert));
+
+		colliderObject.minVertex = DX::XMVectorSet(minVertex.x, minVertex.y, minVertex.z, 0);
+		colliderObject.maxVertex = DX::XMVectorSet(maxVertex.x, maxVertex.y, maxVertex.z, 0);
+	}
 }

@@ -6,8 +6,9 @@ Entity::Entity()
 	Init();
 }
 
-Entity::Entity(Mesh _mesh) : mesh(_mesh)
+Entity::Entity(Mesh _mesh)
 {
+	mesh = std::make_unique<Mesh>(_mesh);
 	Init();
 }
 
@@ -32,11 +33,6 @@ void Entity::BillboardUpdate(Vector3 cameraPosition)
 	}
 }
 
-void Entity::AddCollider(Collider _collider)
-{
-	collider = _collider;
-}
-
 void Entity::Init()
 {
 	matrix = DX::XMMatrixIdentity();
@@ -46,7 +42,7 @@ void Entity::Init()
 
 void Entity::Update()
 {
-	collider.UpdateCollider(GetTransform());
+	
 }
 
 void Entity::Draw()
