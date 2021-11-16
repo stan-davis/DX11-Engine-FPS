@@ -16,8 +16,8 @@ public:
 
 	~Entity() = default;
 
-	void Update();
-	void Draw();
+	virtual void Update();
+	virtual void Draw();
 
 	DirectX::XMMATRIX GetMatrix() { return matrix; }
 	Vector3 GetTransform();
@@ -28,7 +28,10 @@ public:
 	void Rotate(Vector3 axis, float angle);
 	void Scale(Vector3 factor);
 
- 	Mesh GetMesh() { return *mesh; }
+ 	Mesh GetMesh() { return mesh; }
+	Collider GetCollider() { return collider; }
+
+	void SetCollider(Collider _collider) { collider = _collider; }
 
 	std::string Tag() { return tag; }
 	void SetTag(std::string _tag);
@@ -45,8 +48,8 @@ protected:
 	DX::XMMATRIX scale;
 	DX::XMMATRIX rotation;
 
-	std::unique_ptr<Mesh> mesh;
-	std::unique_ptr<Collider> collider;
+	Mesh mesh;
+	Collider collider;
 
 	std::string tag;
 	bool billboard = false;

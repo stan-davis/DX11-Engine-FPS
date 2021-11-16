@@ -6,9 +6,8 @@ Entity::Entity()
 	Init();
 }
 
-Entity::Entity(Mesh _mesh)
+Entity::Entity(Mesh _mesh) : mesh(_mesh)
 {
-	mesh = std::make_unique<Mesh>(_mesh);
 	Init();
 }
 
@@ -42,7 +41,7 @@ void Entity::Init()
 
 void Entity::Update()
 {
-	
+	collider.CalculateAABB(this->GetTransform());
 }
 
 void Entity::Draw()

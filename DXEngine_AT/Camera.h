@@ -9,8 +9,10 @@ public:
 	Camera(float fov, float aspectRatio, float _near, float _far);
 	~Camera() = default;
 
-	void RotateYAW(float value);
-	void MoveForward(float value);
+	void RotateYAW(float direction, float delta);
+	void MoveForward(float direction, float delta);
+
+	void Update() override;
 
 	DX::XMMATRIX GetCameraMatrix();
 private:
@@ -30,7 +32,11 @@ private:
 	DX::XMVECTOR camPosition;
 	DX::XMVECTOR camTarget = DX::XMVectorSet(0, 0, 0, 0);;
 
+	//Direction & Constants
 	float yaw = 0;
 	float forward = 0;
+
+	const float m_velocity = 10;
+	const float r_velocity = 4;
 };
 

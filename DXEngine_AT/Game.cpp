@@ -16,37 +16,31 @@ void Game::Start()
 
 void Game::Update(float delta)
 {
-	//some camera vars
-	float move_speed = 10 * delta;
-	float rotation_speed = 4 * delta;
+	bool is_colliding = false;
+	Vector3 camera_previous = camera->GetTransform();
 
-	//Key input
+	//Update Camera
 	if (input->isPressed(KEYS::W))
-	{
-		camera->MoveForward(move_speed);
-	}
-
+		camera->MoveForward(1, delta);
 	if (input->isPressed(KEYS::S))
-	{
-		camera->MoveForward(-move_speed);
-	}
-
-	if (input->isPressed(KEYS::D))
-	{
-		camera->RotateYAW(rotation_speed);
-	}
-
-	if (input->isPressed(KEYS::A))
-	{
-		camera->RotateYAW(-rotation_speed);
-	}
+		camera->MoveForward(-1, delta);
+	if (input->isPressed(KEYS::D)) 
+		camera->RotateYAW(1, delta);
+	if (input->isPressed(KEYS::A)) 
+		camera->RotateYAW(-1, delta);
 
 	camera->Update();
-
+	
+	//Update Entities
 	for (auto& e : entities)
 	{
-		e->Update();
 		e->BillboardUpdate(camera->GetTransform());
+
+		if (camera->GetCollider().RectCollision(e->GetCollider().GetColliderObject()))
+		{
+			//Resolve collision
+			camera->Translate(camera_previous);
+		}
 	}
 }
 
@@ -92,31 +86,44 @@ void Game::CreateMapData(std::string filePath)
 	{
 		OutputDebugString(L"Failed to open level data\n");
 	}
-
+	
 	wallModel = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
+	enemyModel = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
 
 	//Draw map
 	for(int x = 0; x < mapWidth; x++)
 		for (int z = 0; z < mapHeight; z++)
 		{
 			char index = mapData[z * mapWidth + x];
+
+			Entity temp;
 			Vector3 pos = { static_cast<float>(x * cubeSize), 0, static_cast<float>(z * cubeSize) };
-			//Entity e = Entity(wallModel);
+			Collider col = Collider({ cubeSize, 0, cubeSize});
 
 			switch (index)
 			{
 			case '#':
-
+				temp = Entity(wallModel);
+				temp.Translate(pos);
+				temp.SetCollider(col);
+				temp.Update(); //update aabb
 				break;
 			case '@':
 				//Create player camera
-				camera = std::make_unique<Camera>(0.4f * 3.14f, static_cast<float>(windowWidth / windowHeight), 1.0f, 1000.0f);
+				camera = std::make_unique<Camera>(70, static_cast<float>(windowWidth / windowHeight), 1, 1000);
 				camera->Translate(pos);
+				temp.SetCollider(col);
 				break;
 			case 'e':
-
+				temp = Entity(enemyModel);
+				temp.Translate(pos);
+				temp.IsBillboard(true);
+				temp.SetCollider(col);
+				temp.Update();
 				break;
 			}
+
+			entities.push_back(std::make_unique<Entity>(temp));
 		}
 
 	delete[] mapData;

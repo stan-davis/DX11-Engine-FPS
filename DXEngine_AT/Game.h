@@ -27,5 +27,5 @@ private:
 
 	//Meshes
 	Mesh wallModel;
-	//Mesh enemyModel = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
+	Mesh enemyModel;
 };

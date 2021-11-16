@@ -53,6 +53,7 @@ Mesh::Mesh(std::string _modelPath, std::wstring _texturePath, wrl::ComPtr<ID3D11
 				};
 			}
 
+			rawVertices.push_back(vertex.position);
 			vertices.push_back(vertex);
 			indices.push_back(indices.size());
 		}

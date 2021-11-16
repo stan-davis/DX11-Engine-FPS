@@ -45,6 +45,7 @@ public:
 	wrl::ComPtr<ID3D11Buffer> GetVertexBuffer() { return vertexBuffer; }
 
 	std::vector<Vertex> GetVertices() { return vertices; }
+	std::vector<DirectX::XMFLOAT3> GetRawVertices() { return rawVertices; }
 	std::vector<DWORD> GetIndices() { return indices; }
 	wrl::ComPtr<ID3D11ShaderResourceView> GetTexture() { return texture; }
 	wrl::ComPtr<ID3D11SamplerState> GetSamplerState() { return textureSamplerState; }
@@ -61,6 +62,7 @@ private:
 
 	//Required
 	std::vector<Vertex> vertices;
+	std::vector<DirectX::XMFLOAT3> rawVertices;
 	std::vector<DWORD> indices;
 
 	std::wstring texturePath;

@@ -1,6 +1,7 @@
 #pragma once
 #include "UtilityMath.h"
 #include <DirectXMath.h>
+#include "UtilityMath.h"
 #include <vector>
 
 namespace DX = DirectX;
@@ -10,19 +11,21 @@ class Collider
 public:
 	struct RectColliderObject
 	{
-		DX::XMVECTOR& minVertex;
-		DX::XMVECTOR& maxVertex;
+		Vector3 min = {0,0,0};
+		Vector3 max = {0,0,0};
 	};
 
 	Collider() = default;
+	Collider(Vector3 _size) : size(_size) {}
 	~Collider() = default;
 
-	bool RectCollision(RectColliderObject o1, RectColliderObject o2);
-	void CalculateAABB(std::vector<DX::XMFLOAT3> verts, DX::XMMATRIX& worldSpace);
+	RectColliderObject GetColliderObject() { return colliderObject; }
+
+	bool RectCollision(RectColliderObject target);
+	void CalculateAABB(Vector3 p);
 
 private:
-	std::vector<DX::XMFLOAT3> vertices;
-	DX::XMMATRIX matrix;
+	Vector3 size = { 0,0,0 };
 	RectColliderObject colliderObject;
 };
 
