@@ -94,6 +94,7 @@ void Mesh::Initilize()
 	device->CreateBuffer(&vbd, &vertData, vertexBuffer.GetAddressOf()); //Probably needs error checking
 
 	//Create texture sampler
+	DirectX::WIC_LOADER_IGNORE_SRGB;
 	DirectX::CreateWICTextureFromFile(device.Get(), texturePath.c_str(), nullptr, texture.GetAddressOf());
 
 	D3D11_SAMPLER_DESC sdc = {};

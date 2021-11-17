@@ -1,4 +1,5 @@
 #include "Collider.h"
+#include <cmath>
 
 bool Collider::RectCollision(RectColliderObject target)
 {

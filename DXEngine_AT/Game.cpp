@@ -16,8 +16,7 @@ void Game::Start()
 
 void Game::Update(float delta)
 {
-	bool is_colliding = false;
-	Vector3 camera_previous = camera->GetTransform();
+	Vector3 prev = camera->GetTransform();
 
 	//Update Camera
 	if (input->isPressed(KEYS::W))
@@ -39,7 +38,7 @@ void Game::Update(float delta)
 		if (camera->GetCollider().RectCollision(e->GetCollider().GetColliderObject()))
 		{
 			//Resolve collision
-			camera->Translate(camera_previous);
+			camera->Translate(prev);
 		}
 	}
 }
@@ -98,7 +97,7 @@ void Game::CreateMapData(std::string filePath)
 
 			Entity temp;
 			Vector3 pos = { static_cast<float>(x * cubeSize), 0, static_cast<float>(z * cubeSize) };
-			Collider col = Collider({ cubeSize, 0, cubeSize});
+			Collider col = Collider({ cubeSize + 0.2f, 0, cubeSize + 0.2f });
 
 			switch (index)
 			{
@@ -112,7 +111,7 @@ void Game::CreateMapData(std::string filePath)
 				//Create player camera
 				camera = std::make_unique<Camera>(70, static_cast<float>(windowWidth / windowHeight), 1, 1000);
 				camera->Translate(pos);
-				temp.SetCollider(col);
+				temp.SetCollider(Collider({ 0.1, 0, 0.1 }));
 				break;
 			case 'e':
 				temp = Entity(enemyModel);

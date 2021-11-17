@@ -16,7 +16,7 @@ public:
 	void Draw(float delta);
 
 private:
-	const float CLEAR_COLOR[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	const float CLEAR_COLOR[4] = { 0.2f, 0.6f, 0.8f, 1.0f };
 
 	std::unique_ptr<Graphics> graphics;
 	std::unique_ptr<Camera> camera;

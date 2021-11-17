@@ -122,10 +122,10 @@
     <Text Include="test_map.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\wall_brick.png">
+    <Image Include="textures\demon.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="textures\demon.png">
+    <Image Include="textures\wall_brick.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

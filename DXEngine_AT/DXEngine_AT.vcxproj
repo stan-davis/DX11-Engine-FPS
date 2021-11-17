@@ -176,7 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\demon.png" />
-    <Image Include="Textures\wall_brick.png" />
+    <Image Include="textures\wall_brick.png" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="Models\cube_wall.obj">
