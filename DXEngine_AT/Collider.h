@@ -17,15 +17,18 @@ public:
 
 	Collider() = default;
 	Collider(Vector3 _size) : size(_size) {}
+	Collider(float _radius) : radius(_radius) {}
 	~Collider() = default;
 
 	RectColliderObject GetColliderObject() { return colliderObject; }
 
+	Vector3 CircleRectCollision(Vector3 target, RectColliderObject object);
 	bool RectCollision(RectColliderObject target);
 	void CalculateAABB(Vector3 p);
 
 private:
 	Vector3 size = { 0,0,0 };
+	float radius = 0;
 	RectColliderObject colliderObject;
 };
 

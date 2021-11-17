@@ -16,20 +16,20 @@ void Entity::SetTag(std::string _tag)
 	tag = _tag;
 }
 
-void Entity::IsBillboard(bool value)
+void Entity::MakeBillboard()
 {
-	billboard = value;
+	billboard = true;
 }
 
-void Entity::BillboardUpdate(Vector3 cameraPosition)
+void Entity::SetCameraDistance(Vector3 distance)
 {
-	if (billboard)
-	{
-		Vector3 distance = GetTransform() - cameraPosition;
-		float angle = std::atan2f(distance.x, distance.z) * (180 / DX::XM_PI);
-		angle *= 0.0174532925f; //the magic number
-		Rotate({ 0,1,0 }, angle);
-	}
+	cameraDistance = distance;
+}
+
+void Entity::MakeStatic()
+{
+	c_static = true;
+	collider.CalculateAABB(this->GetTransform());
 }
 
 void Entity::Init()
@@ -41,7 +41,13 @@ void Entity::Init()
 
 void Entity::Update()
 {
-	collider.CalculateAABB(this->GetTransform());
+	if (billboard)
+	{
+		float angle = std::atan2f(cameraDistance.x, cameraDistance.z);
+		Rotate({ 0,1,0 }, angle);
+	}
+
+	if(!c_static) collider.CalculateAABB(this->GetTransform());
 }
 
 void Entity::Draw()

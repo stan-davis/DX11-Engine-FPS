@@ -17,4 +17,7 @@ struct Vector3
 
 	float Magnitude() const;
 	void Normalize();
+	void Floor();
+	Vector3 Min(const Vector3& vec3);
+	Vector3 Max(const Vector3& vec3);
 };

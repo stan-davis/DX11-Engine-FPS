@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "Game.h"
 #include <vector>
 #include <iostream>
@@ -16,31 +18,34 @@ void Game::Start()
 
 void Game::Update(float delta)
 {
-	Vector3 prev = camera->GetTransform();
-
-	//Update Camera
+	//Camera Input
 	if (input->isPressed(KEYS::W))
-		camera->MoveForward(1, delta);
+		player->Move({ 1,0,1 }, delta);
 	if (input->isPressed(KEYS::S))
-		camera->MoveForward(-1, delta);
-	if (input->isPressed(KEYS::D)) 
-		camera->RotateYAW(1, delta);
-	if (input->isPressed(KEYS::A)) 
-		camera->RotateYAW(-1, delta);
-
-	camera->Update();
+		player->Move({ -1,0,-1 }, delta);
+	if (input->isPressed(KEYS::A))
+		player->RotateYAW(-1, delta);
+	if (input->isPressed(KEYS::D))
+		player->RotateYAW(1, delta);
 	
+	Vector3 target = player->GetTarget();
+
 	//Update Entities
 	for (auto& e : entities)
 	{
-		e->BillboardUpdate(camera->GetTransform());
+		Vector3 distance = e->GetTransform() - player->GetTransform();
 
-		if (camera->GetCollider().RectCollision(e->GetCollider().GetColliderObject()))
+		if (distance.Magnitude() < ENTITY_UPDATE_DISTANCE) //Only update entities within range
 		{
-			//Resolve collision
-			camera->Translate(prev);
+			if(e->IsBillboard()) e->SetCameraDistance(distance);
+			e->Update();
+			target = player->GetCollider().CircleRectCollision(target, e->GetCollider().GetColliderObject());
 		}
 	}
+
+	//Update Camera
+	player->Translate(target);
+	player->Update();
 }
 
 void Game::Draw(float delta)
@@ -53,7 +58,7 @@ void Game::Draw(float delta)
 	for (auto& e : entities)
 		e->Draw();
 	
-	graphics->UpdateBufferData(entities, camera->GetCameraMatrix());
+	graphics->UpdateBufferData(entities, player->GetCamera().GetCameraMatrix());
 	
 	//Present
 	swapchain->Present(0, 0);
@@ -63,7 +68,7 @@ void Game::CreateMapData(std::string filePath)
 {
 	int mapWidth = 0;
 	int mapHeight = 0;
-	float cubeSize = 2;
+	float tileSize = 2;
 
 	char* mapData = nullptr;
 
@@ -96,29 +101,27 @@ void Game::CreateMapData(std::string filePath)
 			char index = mapData[z * mapWidth + x];
 
 			Entity temp;
-			Vector3 pos = { static_cast<float>(x * cubeSize), 0, static_cast<float>(z * cubeSize) };
-			Collider col = Collider({ cubeSize + 0.2f, 0, cubeSize + 0.2f });
+			Vector3 position = { static_cast<float>(x * tileSize), 0, static_cast<float>(z * tileSize) };
 
 			switch (index)
 			{
 			case '#':
 				temp = Entity(wallModel);
-				temp.Translate(pos);
-				temp.SetCollider(col);
-				temp.Update(); //update aabb
+				temp.Translate(position);
+				temp.SetCollider(Collider({ tileSize, 0, tileSize }));
+				temp.MakeStatic();
 				break;
 			case '@':
-				//Create player camera
-				camera = std::make_unique<Camera>(70, static_cast<float>(windowWidth / windowHeight), 1, 1000);
-				camera->Translate(pos);
-				temp.SetCollider(Collider({ 0.1, 0, 0.1 }));
+				//Create player entity
+				player = std::make_unique<Player>(CameraComponent(70, static_cast<float>(windowWidth / windowHeight), 1, 1000));
+				player->SetTarget(position);
+				player->SetCollider(Collider(0.5f));
 				break;
 			case 'e':
 				temp = Entity(enemyModel);
-				temp.Translate(pos);
-				temp.IsBillboard(true);
-				temp.SetCollider(col);
-				temp.Update();
+				temp.Translate(position);
+				temp.MakeBillboard();
+				temp.SetCollider(Collider({ 1,0,1 }));
 				break;
 			}
 

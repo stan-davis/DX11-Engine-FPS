@@ -19,6 +19,7 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
+	//Transforms
 	DirectX::XMMATRIX GetMatrix() { return matrix; }
 	Vector3 GetTransform();
 	Vector3 GetRotation();
@@ -28,16 +29,20 @@ public:
 	void Rotate(Vector3 axis, float angle);
 	void Scale(Vector3 factor);
 
+	//Other important stuff
  	Mesh GetMesh() { return mesh; }
-	Collider GetCollider() { return collider; }
 
+	Collider GetCollider() { return collider; }
 	void SetCollider(Collider _collider) { collider = _collider; }
 
 	std::string Tag() { return tag; }
 	void SetTag(std::string _tag);
 
-	void IsBillboard(bool value);
-	void BillboardUpdate(Vector3 cameraPosition);
+	void MakeBillboard();
+	bool IsBillboard() { return billboard; }
+	void SetCameraDistance(Vector3 distance);
+
+	void MakeStatic();
 
 protected:
 	void Init();
@@ -53,5 +58,7 @@ protected:
 
 	std::string tag;
 	bool billboard = false;
+	bool c_static = false;
+	Vector3 cameraDistance = { 0,0,0 };
 };
 

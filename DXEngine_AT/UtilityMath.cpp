@@ -1,5 +1,6 @@
 #include "UtilityMath.h"
 #include <cmath>
+#include <algorithm>
 
 Vector3::Vector3(const Vector3& vec3)
 {
@@ -56,4 +57,21 @@ void Vector3::Normalize()
 	x /= Magnitude();
 	y /= Magnitude();
 	z /= Magnitude();
+}
+
+void Vector3::Floor()
+{
+	x = std::floor(x);
+	y = std::floor(x);
+	z = std::floor(x);
+}
+
+Vector3 Vector3::Min(const Vector3& vec3)
+{
+	return Vector3(std::min(x, vec3.x), std::min(y, vec3.y), std::min(z, vec3.z));
+}
+
+Vector3 Vector3::Max(const Vector3& vec3)
+{
+	return Vector3(std::max(x, vec3.x), std::max(y, vec3.y), std::max(z, vec3.z));
 }
