@@ -178,6 +178,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\demon.png" />
+    <Image Include="textures\door.png" />
+    <Image Include="textures\gun_fire.png" />
     <Image Include="textures\wall_brick.png" />
   </ItemGroup>
   <ItemGroup>

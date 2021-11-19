@@ -134,6 +134,12 @@
     <Image Include="textures\wall_brick.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="textures\gun_fire.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="textures\door.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Object Include="Models\cube_wall.obj">

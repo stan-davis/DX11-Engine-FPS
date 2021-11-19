@@ -17,6 +17,8 @@ public:
 	Vector3 GetTarget() { return target; }
 	void SetTarget(Vector3 t) { target = t; }
 
+	Vector3 GetDirection();
+
 	CameraComponent GetCamera() { return *camera; }
 
 private:

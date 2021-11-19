@@ -21,6 +21,8 @@ private:
 	};
 
 	void CreateConstantBuffer();
+	void CreateBlendState();
+	void SetCullModes();
 	void CreateVertexShader(LPCWSTR filePath, LPCSTR entryPoint);
 	void CreatePixelShader(LPCWSTR filePath, LPCSTR entryPoint);
 	void SetInputLayout();
@@ -33,6 +35,10 @@ private:
 	//Shaders
 	wrl::ComPtr<ID3D11VertexShader> vertexShader;
 	wrl::ComPtr<ID3D11PixelShader> pixelShader;
+
+	//BlendState & Cull Mode
+	wrl::ComPtr<ID3D11BlendState> blendState;
+	wrl::ComPtr<ID3D11RasterizerState> NoCullMode;
 
 	//Buffers
 	ID3D10Blob* VS;

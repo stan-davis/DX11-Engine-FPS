@@ -27,25 +27,75 @@ void Game::Update(float delta)
 		player->RotateYAW(-1, delta);
 	if (input->isPressed(KEYS::D))
 		player->RotateYAW(1, delta);
-	
+
 	Vector3 target = player->GetTarget();
+	bool shoot = false;
+
+	//Raycast bullet
+	if (input->isPressed(KEYS::SPACE))
+	{
+		shoot = true;
+	}
 
 	//Update Entities
 	for (auto& e : entities)
 	{
-		Vector3 distance = e->GetTransform() - player->GetTransform();
-
-		if (distance.Magnitude() < ENTITY_UPDATE_DISTANCE) //Only update entities within range
+		if (e->IsActive())
 		{
-			if(e->IsBillboard()) e->SetCameraDistance(distance);
-			e->Update();
-			target = player->GetCollider().CircleRectCollision(target, e->GetCollider().GetColliderObject());
+			Vector3 distance = e->GetTransform() - player->GetTransform();
+
+			if (distance.Magnitude() < ENTITY_UPDATE_DISTANCE) //Only update entities within range
+			{
+				if (shoot && e->Tag() == "enemy")
+				{
+					if (RayCastHit(e->GetCollider().GetColliderObject()))
+					{
+						e->SetActive(false);
+						shoot = false;
+					}
+				}
+
+				if(e->IsBillboard()) e->SetCameraDistance(distance);
+				e->Update();
+
+				if (player->GetCollider().CircleRectCollision(target, e->GetCollider().GetColliderObject(), target))
+				{
+					if (e->Tag() == "door")
+					{
+						e->SetActive(false);
+					}
+				}
+			}
 		}
 	}
 
 	//Update Camera
 	player->Translate(target);
 	player->Update();
+}
+
+bool Game::RayCastHit(Collider::RectColliderObject o)
+{
+	const float rayLength = 5;
+
+	Entity ray = Entity();
+	ray.Translate(player->GetTransform());
+	ray.SetCollider(Collider(1));
+
+	Vector3 playerDirection = player->GetDirection();
+	Vector3 f = { 0,0,0 };
+
+	for (int i = 0; i < rayLength; i++)
+	{
+		ray.Translate(ray.GetTransform() + (playerDirection * i));
+
+		if (ray.GetCollider().CircleRectCollision(ray.GetTransform(), o, f))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Game::Draw(float delta)
@@ -91,8 +141,10 @@ void Game::CreateMapData(std::string filePath)
 		OutputDebugString(L"Failed to open level data\n");
 	}
 	
-	wallModel = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
-	enemyModel = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
+	modelWall = Mesh("models/cube_wall.obj", L"textures/wall_brick.png", device);
+	modelDoor = Mesh("models/cube_wall.obj", L"textures/door.png", device);
+	modelEnemy = Mesh("models/billboard_plane.obj", L"textures/demon.png", device);
+	modelFire = Mesh("models/billboard_plane.obj", L"textures/gun_fire.png", device);
 
 	//Draw map
 	for(int x = 0; x < mapWidth; x++)
@@ -106,10 +158,17 @@ void Game::CreateMapData(std::string filePath)
 			switch (index)
 			{
 			case '#':
-				temp = Entity(wallModel);
+				temp = Entity(modelWall);
 				temp.Translate(position);
 				temp.SetCollider(Collider({ tileSize, 0, tileSize }));
 				temp.MakeStatic();
+				break;
+			case 'd':
+				temp = Entity(modelDoor);
+				temp.Translate(position);
+				temp.SetCollider(Collider({ tileSize, 0, tileSize }));
+				temp.MakeStatic();
+				temp.SetTag("door");
 				break;
 			case '@':
 				//Create player entity
@@ -118,10 +177,11 @@ void Game::CreateMapData(std::string filePath)
 				player->SetCollider(Collider(0.5f));
 				break;
 			case 'e':
-				temp = Entity(enemyModel);
+				temp = Entity(modelEnemy);
 				temp.Translate(position);
 				temp.MakeBillboard();
 				temp.SetCollider(Collider({ 1,0,1 }));
+				temp.SetTag("enemy");
 				break;
 			}
 

@@ -27,3 +27,17 @@ void Player::Move(Vector3 direction, float delta)
 
 	target = { x, 0, z };
 }
+
+Vector3 Player::GetDirection()
+{
+	Vector3 v = { 0,0,0 };
+
+	//Save facing direction for usage later
+	float xf = sinf(camera->GetYAW());
+	float zf = cosf(camera->GetYAW());
+
+	v = { xf, 0, zf };
+	v.Normalize();
+
+	return v;
+}

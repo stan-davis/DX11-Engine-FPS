@@ -62,8 +62,8 @@ void Vector3::Normalize()
 void Vector3::Floor()
 {
 	x = std::floor(x);
-	y = std::floor(x);
-	z = std::floor(x);
+	y = std::floor(y);
+	z = std::floor(z);
 }
 
 Vector3 Vector3::Min(const Vector3& vec3)

@@ -32,6 +32,22 @@ void Entity::MakeStatic()
 	collider.CalculateAABB(this->GetTransform());
 }
 
+void Entity::SetActive(bool value)
+{
+	active = value;
+	
+	//Remove colliders and save a copy of original in-case
+	if (!active)
+	{
+		inactiveCollider = collider;
+		collider = Collider(); //Blank collider
+	}
+	else
+	{
+		collider = inactiveCollider;
+	}
+}
+
 void Entity::Init()
 {
 	matrix = DX::XMMatrixIdentity();

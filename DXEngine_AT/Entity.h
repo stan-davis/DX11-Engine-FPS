@@ -44,6 +44,12 @@ public:
 
 	void MakeStatic();
 
+	bool IsActive() { return active; }
+	void SetActive(bool value);
+
+	void MakeTransparent() { is_transparent = true; }
+	bool IsTransparent() { return is_transparent; }
+
 protected:
 	void Init();
 
@@ -55,10 +61,14 @@ protected:
 
 	Mesh mesh;
 	Collider collider;
-
+	Collider inactiveCollider;
 	std::string tag;
+
 	bool billboard = false;
 	bool c_static = false;
+	bool active = true;
+	bool is_transparent = false;
+
 	Vector3 cameraDistance = { 0,0,0 };
 };
 

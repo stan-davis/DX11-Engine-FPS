@@ -22,7 +22,7 @@ public:
 
 	RectColliderObject GetColliderObject() { return colliderObject; }
 
-	Vector3 CircleRectCollision(Vector3 target, RectColliderObject object);
+	bool CircleRectCollision(Vector3 target, RectColliderObject object, Vector3& resolutionOut);
 	bool RectCollision(RectColliderObject target);
 	void CalculateAABB(Vector3 p);
 

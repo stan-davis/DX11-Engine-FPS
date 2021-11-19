@@ -2,16 +2,18 @@
 #include <cmath>
 #include <algorithm>
 
-Vector3 Collider::CircleRectCollision(Vector3 target, RectColliderObject object)
+bool Collider::CircleRectCollision(Vector3 target, RectColliderObject object, Vector3& resolutionOut)
 {
 	//Algorithm from Javidx9 (Circle Vs Rectangle Collisions)
 	Vector3 minPoint = object.min;
 	Vector3 maxPoint = object.max;
 
+	//Find the nearest point on the collider
 	Vector3 nearest = { 0,0,0 };
 	nearest.x = std::max(minPoint.x, std::min(target.x, maxPoint.x));
 	nearest.z = std::max(minPoint.z, std::min(target.z, maxPoint.z));
 
+	//Cast a ray out to that point and check the overlapping amount
 	Vector3 ray = nearest - target;
 	float overlap = radius - ray.Magnitude();
 
@@ -20,11 +22,13 @@ Vector3 Collider::CircleRectCollision(Vector3 target, RectColliderObject object)
 	if (overlap > 0)
 	{
 		ray.Normalize();
-		return target - ray * overlap;
+		resolutionOut = target - ray * overlap;
+		return true;
 	}
 	else
 	{
-		return target;
+		resolutionOut = target;
+		return false;
 	}
 }
 
