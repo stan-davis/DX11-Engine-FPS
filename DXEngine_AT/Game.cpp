@@ -103,11 +103,11 @@ void Game::Draw(float delta)
 	//Clear
 	context->ClearRenderTargetView(renderTargetView.Get(), CLEAR_COLOR);
 	context->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+	
 	//Buffer Update
 	for (auto& e : entities)
 		e->Draw();
-	
+
 	graphics->UpdateBufferData(entities, player->GetCamera().GetCameraMatrix());
 	
 	//Present

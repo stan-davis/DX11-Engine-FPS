@@ -30,6 +30,7 @@ public:
 	HRESULT Run();
 	
 	void UpdateTime();
+	void UpdateDebugInfo();
 
 	//Virtual Methods for Gameplay
 	virtual void Start() = 0;
@@ -60,6 +61,10 @@ private:
 	UINT64 startTime;
 	UINT64 currentTime;
 	UINT64 previousTime;
+
+	UINT64 endFrameTime;
+
+	float timeToUpdate;
 	float deltaTime;
 	float totalElapsedTime;
 };

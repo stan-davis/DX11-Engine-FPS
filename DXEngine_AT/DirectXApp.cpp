@@ -91,7 +91,7 @@ HRESULT DiectXApp::InitWindow()
 		hInstance,
 		0);
 
-	//delete[] w_title; //delete pointer after use
+	delete[] w_title; //delete pointer after use
 
 	if (hWnd == nullptr)
 	{
@@ -221,6 +221,8 @@ HRESULT DiectXApp::Run()
 			//Update & Draw Game
 			Update(deltaTime);
 			Draw(deltaTime);
+
+			UpdateDebugInfo();
 		}
 	}
 
@@ -237,4 +239,14 @@ void DiectXApp::UpdateTime()
 	totalElapsedTime = static_cast<float>((currentTime - startTime) * performanceSeconds);
 
 	previousTime = currentTime;
+}
+
+void DiectXApp::UpdateDebugInfo()
+{
+	QueryPerformanceCounter((LARGE_INTEGER*)&endFrameTime);
+	
+	timeToUpdate = static_cast<float>((endFrameTime - currentTime) * performanceSeconds) * 1000;
+	
+	std::string titleText = "Last Frame Update: " + std::to_string(static_cast<int>(round(timeToUpdate))) + "ms";
+	SetWindowTextA(hWnd, titleText.c_str());
 }
